@@ -1,0 +1,20 @@
+# Core Scientific Computing & Control Systems
+numpy>=1.24.0,<2.0.0
+scipy>=1.10.0
+pandas>=2.0.0
+control>=0.9.4
+
+# Machine Learning & Optimization
+scikit-learn>=1.2.0
+xgboost>=1.7.0
+torch>=2.0.0
+optuna>=3.1.0
+
+# Visualization & Web UI
+streamlit>=1.25.0
+plotly>=5.14.0
+matplotlib>=3.7.0
+
+# Serialization & Testing
+joblib>=1.2.0
+pytest>=7.0.0
