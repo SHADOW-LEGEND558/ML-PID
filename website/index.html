@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e1722">
+  <meta name="description" content="ML-PID research workspace. Explore second-order systems, open-loop responses, and PID feedback.">
+  <title>ML-PID · System basics</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="ML-PID home"><span class="brand-icon" aria-hidden="true">⌁</span> ML<span class="brand-divider">/</span>PID</a>
+    <span class="header-caption">A DATA-DRIVEN CONTROL STUDY</span>
+    <span class="draft"><i></i> Research in progress</span>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="sidebar-label">WORKSPACE <span>01</span></div>
+      <nav aria-label="Project sections">
+        <a class="nav-link active" href="#basics" aria-current="page"><span aria-hidden="true">⌁</span> System basics <span class="nav-arrow" aria-hidden="true">↗</span></a>
+        <a class="nav-link" href="#data-generation"><span aria-hidden="true">▧</span> Data generation <span class="nav-arrow" aria-hidden="true">↗</span></a>
+      </nav>
+      <div class="sidebar-note"><span class="tiny-cross" aria-hidden="true">+</span><p>From plant dynamics<br>to learning-ready data.</p><span class="mono">ML-PID / EXPERIMENT 01</span></div>
+    </aside>
+
+    <main id="main">
+      <section id="basics" aria-labelledby="page-title">
+        <div class="breadcrumb">WORKSPACE <span>/</span> SYSTEM BASICS</div>
+        <div class="page-heading"><div><p class="eyebrow"><span></span> THE FOUNDATION</p><h1 id="page-title">First, understand<br>the <em>system.</em></h1><p class="intro">An input goes in. A response comes out.<br>Explore what a plant does on its own, then use<br class="desktop-break"> feedback to shape how it behaves.</p></div><span class="section-number" aria-hidden="true">01</span></div>
+
+
+        <div class="concept-intro">
+          <div><p class="eyebrow">01 / WHAT IS A SYSTEM?</p><h2>A relationship between input and output.</h2><p>A physical system, or <strong>plant</strong>, responds to an input over time. A motor turns voltage into motion; an RLC circuit turns applied voltage into capacitor voltage. Its dynamics determine how quickly the output moves, whether it oscillates, and where it settles.</p></div>
+          <svg class="block-diagram" viewBox="0 0 460 150" role="img" aria-labelledby="open-block-title"><title id="open-block-title">Input u passes through plant G to output y without feedback.</title><defs><marker id="open-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#9ed8ff"/></marker></defs><path class="wire" d="M30 80 H155 M305 80 H435" marker-end="url(#open-arrow)"/><path class="wire" d="M30 80 H155" marker-end="url(#open-arrow)"/><rect class="block" x="155" y="47" width="150" height="66" rx="4"/><text class="block-name" x="230" y="76" text-anchor="middle">Plant</text><text class="signal-label" x="230" y="98" text-anchor="middle">G(s)</text><text class="signal-label" x="85" y="62" text-anchor="middle">Input u(t)</text><text class="signal-label" x="375" y="62" text-anchor="middle">Output y(t)</text></svg>
+        </div>
+        <div class="concept-intro transfer-intro">
+          <div><p class="eyebrow">02 / THE TRANSFER FUNCTION</p><h2>A compact model of the dynamics.</h2><p>For a linear, time-invariant system starting from rest, <strong>G(s) = Y(s) / U(s)</strong> relates input and output in the Laplace domain. Here we explore stable second-order plants with gain K, natural frequency ωₙ, damping ζ, and optional delay L—not every possible second-order system.</p></div>
+          <div class="formula section-equation" aria-label="G of s equals K omega n squared divided by s squared plus two zeta omega n s plus omega n squared, multiplied by exponential minus L s"><span class="micro-label">SECOND-ORDER PLANT + DELAY</span><span>G(s) = <span class="fraction"><span>Kωₙ²</span><span>s² + 2ζωₙs + ωₙ²</span></span> e<sup>−Ls</sup></span></div>
+          <div class="parameter-key"><p><b>K</b><span>Sets the eventual output for a unit input.</span></p><p><b>ωₙ</b><span>Sets a characteristic speed of response.</span></p><p><b>ζ</b><span>Shapes damping and oscillation.</span></p><p><b>L</b><span>Delays when the response begins.</span></p></div>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">03 / OPEN LOOP</p><h2>Let the plant respond on its own.</h2></div></div>
+        <p class="section-copy">A unit step changes the input from 0 to 1. Without feedback, the input stays at 1 regardless of what the output does. For this plant family, the output eventually approaches K; it does not automatically track a desired output of 1.</p>
+        <div class="experiment-panel">
+          <div class="panel-header"><div><span class="micro-label">PLANT EXPLORER</span><h2>A system. A step. A response.</h2></div><span class="outline-badge">INTERACTIVE DEMO</span></div>
+          <div class="experiment-body">
+            <div class="controls">
+              <p class="control-description">Adjust the dynamics. Watch the open-loop output respond to a unit step.</p>
+              <div class="slider-group"><div class="parameter-header"><label for="gain">Plant gain <span class="symbol">K</span></label><input class="parameter-value" id="gain-value" type="number" inputmode="decimal" min="0.5" max="2" step="0.05" value="1.00" aria-label="Plant gain K, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="gain" type="range" min="0.5" max="2" step="0.05" value="1"><div class="range-labels"><span>0.5</span><span>2.0</span></div></div>
+              <div class="slider-group"><div class="parameter-header"><label for="frequency">Natural frequency <span class="symbol">ωₙ</span></label><input class="parameter-value" id="frequency-value" type="number" inputmode="decimal" min="0.5" max="10" step="0.1" value="2.00" aria-label="Natural frequency in radians per second, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="frequency" type="range" min="0.5" max="10" step="0.1" value="2"><div class="range-labels"><span>0.5 rad/s</span><span>10 rad/s</span></div></div>
+              <div class="slider-group"><div class="parameter-header"><label for="damping">Damping ratio <span class="symbol">ζ</span></label><input class="parameter-value" id="damping-value" type="number" inputmode="decimal" min="0.1" max="2" step="0.01" value="0.35" aria-label="Damping ratio, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="damping" type="range" min="0.1" max="2" step="0.01" value="0.35"><div class="range-labels"><span>0.1</span><span>2.0</span></div></div>
+              <div class="slider-group"><div class="parameter-header"><label for="delay">Dead time <span class="symbol">L</span></label><input class="parameter-value" id="delay-value" type="number" inputmode="decimal" min="0" max="1" step="0.01" value="0.20" aria-label="Dead time in seconds, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="delay" type="range" min="0" max="1" step="0.01" value="0.2"><div class="range-labels"><span>0 s</span><span>1 s</span></div></div>
+              <button id="reset" type="button"><span aria-hidden="true">↺</span> Reset parameters</button>
+            </div>
+            <div class="plot-area">
+              <div class="plot-topline"><span class="mono">OPEN-LOOP STEP RESPONSE</span><span id="regime" class="regime">UNDERDAMPED</span></div>
+              <svg id="response-chart" viewBox="0 0 720 320" role="img" aria-labelledby="chart-title chart-description"><title id="chart-title">Open-loop unit-step response</title><desc id="chart-description">Plant output over time. Adjust the controls to explore the response.</desc><g id="grid"></g><path id="final-line" class="final-line"></path><path id="unit-reference" class="reference-line"></path><path id="response-line" class="response-line"></path><g id="tick-labels"></g><text x="390" y="312" class="axis-title" text-anchor="middle">TIME / SECONDS</text><text x="15" y="146" class="axis-title" text-anchor="middle" transform="rotate(-90 15 146)">OUTPUT</text></svg>
+              <div class="legend"><span><i class="legend-response"></i> Plant output</span><span><i class="legend-reference"></i> Unit input = 1</span><span><i class="legend-final"></i> Final output = K</span></div>
+              <div class="formula"><span class="micro-label">PLANT MODEL</span><span>G(s) = <span class="fraction"><span>Kωₙ²</span><span>s² + 2ζωₙs + ωₙ²</span></span> e<sup>−Ls</sup></span></div>
+              <p class="plot-context" id="open-context"></p><p class="plot-note">Dynamic output scale · Analytical response · No PID feedback · Illustrative preview, not a dataset-generation run</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="section-heading"><div><p class="eyebrow">04 / CLOSE THE LOOP</p><h2>Measure. Compare. Correct.</h2></div><span class="mono subdued">SAME PLANT / ADJUSTABLE CONTROLLER</span></div>
+        <p class="section-copy">Choose a desired output, the <strong>setpoint r(t)</strong>. Negative feedback compares it with the actual output: <strong>e(t) = r(t) − y(t)</strong>. The PID controller uses three actions to turn that error into a changing plant input. These are three terms in one controller, not three separate feedback loops.</p>
+        <div class="pid-cards">
+          <article><span class="step-index">P / PRESENT</span><h3>Proportional</h3><p>Acts on the error now. A larger Kp reacts more strongly, but can increase oscillation.</p><div class="step-code">Kp × e(t)</div></article>
+          <article><span class="step-index">I / PAST</span><h3>Integral</h3><p>Accumulates error over time. It can remove persistent offset in a stable loop, but too much can cause overshoot.</p><div class="step-code">Ki × ∫ e(t) dt</div></article>
+          <article><span class="step-index">D / RATE OF CHANGE</span><h3>Derivative</h3><p>Acts on how fast the error changes. It can add damping; a filter limits sensitivity to rapid changes.</p><div class="step-code">Kd × de(t)/dt</div></article>
+        </div>
+        <div class="feedback-diagram"><svg class="block-diagram" viewBox="0 0 850 210" role="img" aria-labelledby="feedback-block-title"><title id="feedback-block-title">Unity negative feedback: reference minus measured output gives error. PID drives plant; output returns to the minus input.</title><defs><marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#9ed8ff"/></marker></defs><path class="wire" d="M30 82 H163 M207 82 H290 M450 82 H530 M690 82 H810" marker-end="url(#loop-arrow)"/><path class="wire" d="M30 82 H163" marker-end="url(#loop-arrow)"/><path class="wire" d="M207 82 H290" marker-end="url(#loop-arrow)"/><path class="wire" d="M450 82 H530" marker-end="url(#loop-arrow)"/><circle class="sum-circle" cx="185" cy="82" r="22"/><text class="diagram-label" x="145" y="71">+</text><text class="diagram-label" x="198" y="128">−</text><rect class="block" x="290" y="49" width="160" height="66" rx="4"/><text class="block-name" x="370" y="77" text-anchor="middle">PID controller</text><text class="signal-label" x="370" y="99" text-anchor="middle">C(s)</text><rect class="block" x="530" y="49" width="160" height="66" rx="4"/><text class="block-name" x="610" y="77" text-anchor="middle">Plant</text><text class="signal-label" x="610" y="99" text-anchor="middle">G(s)</text><circle class="junction" cx="745" cy="82" r="4"/><path class="wire" d="M745 82 V167 H185 V105" marker-end="url(#loop-arrow)"/><text class="signal-label" x="80" y="62" text-anchor="middle">r(t)</text><text class="signal-label" x="245" y="62" text-anchor="middle">e(t)</text><text class="signal-label" x="490" y="62" text-anchor="middle">u(t)</text><text class="signal-label" x="780" y="62" text-anchor="middle">y(t)</text><text class="signal-label" x="470" y="193" text-anchor="middle">Unity feedback · measured output</text></svg></div>
+        <div class="experiment-panel">
+          <div class="panel-header"><div><span class="micro-label">PID EXPLORER</span><h2>Shape the response.</h2></div><span class="outline-badge">UNIT SETPOINT · r = 1</span></div>
+          <div class="experiment-body">
+            <div class="controls">
+              <p class="control-description">Uses the plant settings above. Start with P alone, then add I and D. Set a gain to zero to turn that action off.</p>
+              <div class="slider-group"><div class="parameter-header"><label for="kp">Proportional <span class="symbol">Kp</span></label><input class="parameter-value" id="kp-value" type="number" inputmode="decimal" min="0" max="10" step="0.05" value="1.00" aria-label="Proportional gain Kp, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="kp" type="range" min="0" max="10" step="0.05" value="1"><div class="range-labels"><span>0</span><span>10</span></div></div>
+              <div class="slider-group"><div class="parameter-header"><label for="ki">Integral <span class="symbol">Ki</span></label><input class="parameter-value" id="ki-value" type="number" inputmode="decimal" min="0" max="10" step="0.05" value="0.50" aria-label="Integral gain Ki, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="ki" type="range" min="0" max="10" step="0.05" value="0.5"><div class="range-labels"><span>0</span><span>10</span></div></div>
+              <div class="slider-group"><div class="parameter-header"><label for="kd">Derivative <span class="symbol">Kd</span></label><input class="parameter-value" id="kd-value" type="number" inputmode="decimal" min="0" max="5" step="0.05" value="0.25" aria-label="Derivative gain Kd, numeric value" title="Type a value; Enter or leaving the field applies it."></div><input id="kd" type="range" min="0" max="5" step="0.05" value="0.25"><div class="range-labels"><span>0</span><span>5</span></div></div>
+              <button id="reset-pid" type="button">↺ Reset PID gains</button>
+              <p class="control-description pid-hint">Plant parameters remain shared between the two explorers.</p>
+            </div>
+            <div class="plot-area">
+              <div class="plot-topline"><span class="mono">CLOSED-LOOP RESPONSE</span><span id="pid-status" class="regime" role="status">SIMULATED</span></div>
+              <svg id="pid-chart" viewBox="0 0 720 320" role="img" aria-labelledby="pid-title pid-description"><title id="pid-title">PID feedback versus open-loop response</title><desc id="pid-description">Compare output with and without PID feedback.</desc><g id="pid-grid"></g><path id="pid-target" class="final-line"></path><path id="pid-open" class="open-line"></path><path id="pid-line" class="response-line"></path><g id="pid-ticks"></g><text x="390" y="312" class="axis-title" text-anchor="middle">TIME / SECONDS</text><text x="15" y="146" class="axis-title" text-anchor="middle" transform="rotate(-90 15 146)">OUTPUT</text></svg>
+              <div class="legend"><span><i class="legend-response"></i> With PID</span><span><i class="legend-open"></i> Open loop</span><span><i class="legend-final"></i> Setpoint = 1</span></div>
+              <div class="pid-metrics"><div><span>OVERSHOOT</span><strong id="pid-overshoot">—</strong></div><div><span>ERROR AT END</span><strong id="pid-error">—</strong></div><div><span>TIME WINDOW</span><strong id="pid-window">—</strong></div></div>
+              <p class="plot-note">Numerical simulation · Filtered derivative, Tf = 0.05 s · Ideal actuator without input limits · No automatic tuning. Sampled metrics over a finite window do not certify stability or safety.</p>
+            </div>
+          </div>
+        </div>
+        <div class="development-note"><span aria-hidden="true">↳</span><p><strong>Try it:</strong> choose K = 2, set Ki = Kd = 0, and observe the offset with proportional control. Add Ki gradually to reduce that offset. Increase L to see why delayed feedback is harder to tune.</p></div>
+      </section>
+      <section id="data-generation" aria-labelledby="data-title" hidden>
+        <div class="breadcrumb">WORKSPACE <span>/</span> DATA GENERATION</div>
+        <div class="page-heading"><div><p class="eyebrow"><span></span> THE FOUNDATION</p><h1 id="data-title">Good control starts<br>with <em>good data.</em></h1></div><span class="section-number" aria-hidden="true">02</span></div>
+        <div class="section-heading"><div><p class="eyebrow">FROM SIMULATION TO SUPERVISION</p><h2>The generation pipeline</h2></div><span class="mono subdued">FOUR STEPS / ONE TRAINING EXAMPLE</span></div>
+        <ol class="pipeline">
+          <li><span class="step-index">01 / SAMPLE</span><h3>Define the plant<span aria-hidden="true">↗</span></h3><p>Sample gain, natural frequency, damping, and dead time across the chosen ranges.</p><div class="step-code">K · ωₙ · ζ · L</div></li>
+          <li><span class="step-index">02 / OBSERVE</span><h3>Measure the response<span aria-hidden="true">↗</span></h3><p>Simulate an open-loop unit step and extract its transient characteristics.</p><div class="step-code">step → response → features</div></li>
+          <li><span class="step-index">03 / TUNE</span><h3>Search for PID gains<span aria-hidden="true">↗</span></h3><p>Numerically minimize ITAE with a maximum 10% sampled overshoot constraint.</p><div class="step-code">min ∫ t|e(t)| dt</div></li>
+          <li><span class="step-index">04 / COLLECT</span><h3>Build the dataset<span aria-hidden="true">↗</span></h3><p>Save successful optimization results: plant parameters, measured features, and gains.</p><div class="step-code">features → [Kp, Ki, Kd]</div></li>
+        </ol>
+      </section>
+      <footer><span>ML / PID</span><span>ML-PID <span class="footer-dot">·</span> RESEARCH WORKSPACE</span><a href="#main">Back to top ↑</a></footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,4 +1,20 @@
+# Use LF for detected text files on Windows, macOS, and Linux.
+# This includes Python, notebooks, CSV, Markdown, HTML, CSS, and JavaScript.
 * text=auto eol=lf
-*.py text eol=lf
-*.csv text eol=lf
-*.md text eol=lf
+
+# Windows batch scripts require Windows-style line endings.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Keep binary assets and serialized models unchanged.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.joblib binary
+*.pt binary
+*.pth binary
