@@ -1,49 +1,35 @@
 """Interactive second-order plant and PID experiment. Run this file directly."""
 
-import warnings
+import sys
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Button, Slider
-from scipy import signal
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
+from data_gen import Plant, PIDGains, PlantSimulator
 
 
 def simulate(zeta=0.2, wn=1.0, gain=1.0, kp=1.0, ki=0.5,
-             kd=0.5, setpoint=1.0, duration=30.0):
-    """Return time, open-loop output, PID output, input effort, and poles.
+             kd=0.5, setpoint=1.0, duration=30.0, delay=0.2):
+    """Output and regular input response for ideal PID and second-order Pade delay.
 
-    Zero initial conditions, unity negative feedback, no transport delay.
-    The derivative uses a fixed first-order filter with time constant 0.05 s.
+    The input additionally contains setpoint*kd*delta(t), not a finite spike.
+    Uses exactly the same model as the dataset generator.
     """
-    if zeta <= 0 or wn <= 0 or gain <= 0 or duration <= 0:
-        raise ValueError("Damping, frequency, plant gain, and duration must be positive.")
-    if min(kp, ki, kd) < 0:
-        raise ValueError("PID gains must be nonnegative.")
-    t = np.linspace(0, duration, 3000)
-    plant_num = np.array([gain * wn**2])
-    plant_den = np.array([1.0, 2 * zeta * wn, wn**2])
-    # C(s) = Kp + Ki/s + Kd*s/(0.05*s + 1).
-    # Drop the integrator when Ki=0 to avoid an artificial pole at zero.
-    if ki == 0:
-        controller_num = np.array([0.05 * kp + kd, kp])
-        controller_den = np.array([0.05, 1.0])
-    else:
-        controller_num = np.array([0.05 * kp + kd, kp + 0.05 * ki, ki])
-        controller_den = np.array([0.05, 1.0, 0.0])
-    loop_num = np.polymul(plant_num, controller_num)
-    loop_den = np.polymul(plant_den, controller_den)
-    closed_den = np.polyadd(loop_den, loop_num)
-    poles = np.roots(closed_den)
-    with warnings.catch_warnings():
-        # Zero control and leading zero polynomial coefficients are intentional.
-        warnings.simplefilter("ignore", signal.BadCoefficients)
-        _, open_output = signal.step((plant_num, plant_den), T=t)
-        _, closed_output = signal.step((loop_num, closed_den), T=t)
-        # U/R = C/(1 + C*G).
-        _, effort = signal.step(
-            (np.polymul(controller_num, plant_den), closed_den), T=t
-        )
-    return t, setpoint * open_output, setpoint * closed_output, setpoint * effort, poles
+    simulator = PlantSimulator()
+    plant = Plant(zeta, wn, delay, gain)
+    simulator.validate_plant(plant)
+    if not np.all(np.isfinite([kp, ki, kd, setpoint, duration])) or min(kp, ki, kd) < 0 or duration <= 0:
+        raise ValueError('Finite nonnegative gains and positive duration are required.')
+    gains = PIDGains(kp, ki, kd)
+    t = np.linspace(0, duration, 5000)
+    _, open_output = simulator.open_loop(plant, t)
+    _, closed_output = simulator.close_loop(plant, gains, t)
+    effort, _ = simulator.control_effort(plant, gains, t)
+    _, den = simulator.closed_loop_coefficients(plant, gains)
+    return t, setpoint * open_output, setpoint * closed_output, setpoint * effort, np.roots(den)
 
 
 def main():
@@ -55,7 +41,7 @@ def main():
     target_line, = output_ax.plot([], [], "k--", label="Setpoint")
     effort_line, = effort_ax.plot([], [], color="tab:purple")
     output_ax.set_ylabel("Plant output y(t)")
-    effort_ax.set_ylabel("PID input u(t)")
+    effort_ax.set_ylabel("Regular PID input u(t)")
     effort_ax.set_xlabel("Time (s)")
     output_ax.legend(loc="upper right", fontsize=8)
     for ax in (output_ax, effort_ax):
@@ -63,12 +49,13 @@ def main():
     status = fig.text(0.1, 0.915, "", fontsize=10)
     fig.text(0.1, 0.015,
              "G(s) = K*wn^2 / (s^2 + 2*zeta*wn*s + wn^2)\n"
-             "Filtered PID: C(s) = Kp + Ki/s + Kd*s/(0.05*s + 1). "
-             "Ideal actuator; no voltage/force limits or delay.", fontsize=9)
+             "Ideal PID: C(s) = Kp + Ki/s + Kd*s. "
+             "Input impulse weight = setpoint*Kd at t=0 (not plotted); delay uses Pade order 2.", fontsize=9)
     settings = [
         ("zeta", "Damping zeta", 0.05, 2.0, 0.2),
         ("wn", "Frequency wn (rad/s)", 0.2, 10.0, 1.0),
         ("gain", "Plant gain K", 0.1, 3.0, 1.0),
+        ("delay", "Dead time (s)", 0.0, 1.0, 0.2),
         ("kp", "Kp", 0.0, 20.0, 1.0),
         ("ki", "Ki", 0.0, 20.0, 0.5),
         ("kd", "Kd", 0.0, 10.0, 0.5),
@@ -91,8 +78,8 @@ def main():
             pid_line.set_data(t, y_pid)
             effort_line.set_data(t, effort)
             overshoot = max(0.0, (np.max(y_pid) / values["setpoint"] - 1) * 100)
-            status.set_text(f"Stable | Overshoot: {overshoot:.1f}% | "
-                            f"Error at end: {values['setpoint'] - y_pid[-1]:.4g}")
+            status.set_text(f"Pade model stable | Overshoot: {overshoot:.1f}% | "
+                            f"End error: {values['setpoint'] - y_pid[-1]:.4g} | Input impulse weight: {values['setpoint'] * values['kd']:.3g}")
             status.set_color("darkgreen")
         else:
             pid_line.set_data([], [])

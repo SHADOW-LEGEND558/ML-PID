@@ -80,44 +80,60 @@ document.getElementById('reset').addEventListener('click', () => {
 
 const pidControls = ['kp', 'ki', 'kd'].map(id => document.getElementById(id));
 
-// Sampled feedback, filtered derivative on error, and exact transport delay
-// represented by interpolation in the stored control-input history.
-function closedResponse(gain, frequency, damping, delay, kp, ki, kd, duration) {
-  const count = Math.ceil(duration / 0.001);
-  const dt = duration / count;
-  const history = new Float64Array(count + 1);
-  const points = [[0, 0]];
-  let position = 0, velocity = 0, integral = 0, filteredError = 0;
-  let peak = 0, diverged = false;
-  const stride = Math.max(1, Math.floor(count / 1000));
-  const acceleration = (p, v, u) => frequency * frequency * (gain * u - p) - 2 * damping * frequency * v;
-  for (let i = 0; i < count; i++) {
-    const error = 1 - position;
-    const derivative = (error - filteredError) / 0.05;
-    history[i] = kp * error + ki * integral + kd * derivative;
-    integral += error * dt;
-    filteredError = error + (filteredError - error) * Math.exp(-dt / 0.05);
-    const index = i - delay / dt;
-    let input = 0;
-    if (index >= 0) {
-      const lo = Math.floor(index), hi = Math.min(i, lo + 1);
-      input = history[lo] + (history[hi] - history[lo]) * (index - lo);
-    }
-    // RK4 plant integration with held input over this controller sample.
-    const k1p = velocity, k1v = acceleration(position, velocity, input);
-    const k2p = velocity + dt * k1v / 2;
-    const k2v = acceleration(position + dt * k1p / 2, k2p, input);
-    const k3p = velocity + dt * k2v / 2;
-    const k3v = acceleration(position + dt * k2p / 2, k3p, input);
-    const k4p = velocity + dt * k3v;
-    const k4v = acceleration(position + dt * k3p, k4p, input);
-    position += dt * (k1p + 2 * k2p + 2 * k3p + k4p) / 6;
-    velocity += dt * (k1v + 2 * k2v + 2 * k3v + k4v) / 6;
-    peak = Math.max(peak, position);
-    if (!Number.isFinite(position) || Math.abs(position) > 20) {diverged = true; break;}
-    if ((i + 1) % stride === 0 || i === count - 1) points.push([(i + 1) * dt, position]);
+// Same ideal PID and second-order Pade plant as src/data_gen.py.
+function multiplyPolynomial(a, b) {
+  const out = Array(a.length + b.length - 1).fill(0);
+  a.forEach((x,i) => b.forEach((y,j) => {out[i+j] += x*y;}));
+  return out;
+}
+function addPolynomial(a, b) {
+  const out = Array(Math.max(a.length,b.length)).fill(0);
+  a.forEach((v,i) => {out[out.length-a.length+i] += v;});
+  b.forEach((v,i) => {out[out.length-b.length+i] += v;});
+  return out;
+}
+function closedCoefficients(gain, frequency, damping, delay, kp, ki, kd) {
+  let pn=[gain*frequency*frequency], pd=[1,2*damping*frequency,frequency*frequency];
+  if (delay > 1e-5) {
+    pn=multiplyPolynomial(pn,[delay*delay/12,-delay/2,1]);
+    pd=multiplyPolynomial(pd,[delay*delay/12,delay/2,1]);
   }
-  return {points, peak, error:1 - position, diverged};
+  if (kp===0 && ki===0 && kd===0) return {num:[0],den:pd};
+  const cn=ki===0?[kd,kp]:[kd,kp,ki], cd=ki===0?[1]:[1,0];
+  const num=multiplyPolynomial(pn,cn);
+  while(num.length>1 && num[0]===0) num.shift();
+  const den=addPolynomial(multiplyPolynomial(pd,cd),num);
+  const scale=den[0];
+  return {num:num.map(v=>v/scale),den:den.map(v=>v/scale)};
+}
+function closedResponse(gain, frequency, damping, delay, kp, ki, kd, duration) {
+  const {num,den}=closedCoefficients(gain,frequency,damping,delay,kp,ki,kd);
+  const order=den.length-1;
+  const padded=Array(order+1-num.length).fill(0).concat(num);
+  // Controllable canonical state space, zero initial state, unit reference.
+  // The plant output is proper even though ideal control effort has an impulse.
+  const C=padded.slice(1);
+  const step=Math.min(0.0005,delay>1e-5?delay/40:0.0005);
+  const count=Math.ceil(duration/step),dt=duration/count;
+  let state=Array(order).fill(0), peak=0, output=0, diverged=false;
+  let itae=0, previousWeightedError=0;
+  const points=[[0,0]],stride=Math.max(1,Math.floor(count/1000));
+  const derivative=x=>[1-den.slice(1).reduce((sum,a,j)=>sum+a*x[j],0),...x.slice(0,-1)];
+  const advance=(x,k,scale)=>x.map((v,j)=>v+scale*k[j]);
+  for(let i=0;i<count;i++) {
+    const k1=derivative(state),k2=derivative(advance(state,k1,dt/2));
+    const k3=derivative(advance(state,k2,dt/2)),k4=derivative(advance(state,k3,dt));
+    state=state.map((v,j)=>v+dt*(k1[j]+2*k2[j]+2*k3[j]+k4[j])/6);
+    output=C.reduce((sum,c,j)=>sum+c*state[j],0);
+    peak=Math.max(peak,output);
+    if(!Number.isFinite(output)||Math.abs(output)>20){diverged=true;break;}
+    // Integrate at every solver step, not just the decimated plotting points.
+    const weightedError=(i+1)*dt*Math.abs(1-output);
+    itae+=dt*(previousWeightedError+weightedError)/2;
+    previousWeightedError=weightedError;
+    if((i+1)%stride===0||i===count-1)points.push([(i+1)*dt,output]);
+  }
+  return {points,peak,error:1-output,itae,diverged};
 }
 
 function renderPID(gain, frequency, damping, delay, duration, openPoints) {
@@ -155,10 +171,12 @@ function renderPID(gain, frequency, damping, delay, duration, openPoints) {
   status.classList.toggle('warning',result.diverged);
   document.getElementById('pid-overshoot').textContent = result.diverged ? '—' : `${Math.max(0,(result.peak-1)*100).toFixed(1)}%`;
   document.getElementById('pid-error').textContent = result.diverged ? '—' : result.error.toFixed(3);
+  document.getElementById('pid-itae').textContent = result.diverged ? '—' :
+    (result.itae < 0.001 ? result.itae.toExponential(2) : result.itae.toFixed(3));
   document.getElementById('pid-window').textContent = `${duration.toFixed(1)} s`;
   document.getElementById('pid-description').textContent = result.diverged ?
     'PID response exceeded the display limit and is hidden. Reduce gains or dead time.' :
-    `Unit setpoint tracking with Kp ${gains[0]}, Ki ${gains[1]}, Kd ${gains[2]}. Sampled overshoot ${Math.max(0,(result.peak-1)*100).toFixed(1)} percent. Final error ${result.error.toFixed(3)}. Uses the plant settings above.`;
+    `Unit setpoint tracking with Kp ${gains[0]}, Ki ${gains[1]}, Kd ${gains[2]}. Sampled overshoot ${Math.max(0,(result.peak-1)*100).toFixed(1)} percent. Final error ${result.error.toFixed(3)}. ITAE over the displayed ${duration.toFixed(1)} seconds is ${result.itae.toPrecision(4)}. Uses the plant settings above.`;
 }
 pidControls.forEach(control => control.addEventListener('input', render));
 document.getElementById('reset-pid').addEventListener('click', () => {
@@ -167,7 +185,9 @@ document.getElementById('reset-pid').addEventListener('click', () => {
 });
 
 function selectSection() {
-  const selected = location.hash === '#data-generation' ? 'data-generation' : 'basics';
+  let selected = document.querySelector('main > section:not([hidden])')?.id || 'basics';
+  if (location.hash === '#data-generation') selected = 'data-generation';
+  if (location.hash === '#basics') selected = 'basics';
   document.querySelectorAll('main > section').forEach(section => {section.hidden = section.id !== selected;});
   document.querySelectorAll('.sidebar nav a').forEach(link => {
     const active = link.hash === `#${selected}`;
@@ -175,6 +195,7 @@ function selectSection() {
     if (active) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
   });
   document.title = `ML-PID · ${selected === 'basics' ? 'System basics' : 'Data generation'}`;
+  document.querySelector('footer a').setAttribute('href', `#${selected}`);
 }
 // Commit on Enter or blur so partial input such as "0." remains editable.
 function snapParameter(value, min, max, step) {

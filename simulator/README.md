@@ -3,12 +3,12 @@
 From the project root, run:
 
 ```powershell
-python -m pip install numpy scipy matplotlib
+python -m pip install numpy scipy pandas tqdm matplotlib ipywidgets
 python simulator/second_order.py
 ```
 
 A Matplotlib window opens with sliders for damping ratio, natural frequency,
-plant gain, PID gains, setpoint, and simulation duration. Use a desktop Python
+plant gain, dead time, PID gains, setpoint, and simulation duration. Use a desktop Python
 installation with an interactive Matplotlib backend (such as TkAgg or QtAgg).
 
 The upper plot compares the plant driven directly by a constant input equal to
@@ -29,8 +29,12 @@ The status reports closed-loop pole stability, sampled percentage overshoot,
 and error at the end of the simulation (which is not necessarily steady state).
 Unstable or marginal PID responses are hidden to keep the plot readable.
 
-The model has no transport delay, actuator limits, noise, or automatic tuning.
-Derivative action has a 0.05-second first-order filter to keep the response to
-a setpoint step finite. This differs from the ideal derivative in src/data_gen.py.
-The model represents stable second-order plants such as a series RLC circuit
-with capacitor-voltage output; it does not directly represent a ball-on-beam plant.
+Both the notebook and desktop simulator import the ideal-PID plant model from
+`src/data_gen.py`. Closed-loop transport delay uses a second-order Pade
+approximation; open-loop output uses the analytical true delay. There are no
+actuator limits, noise, or automatic tuning. An ideal derivative on a reference
+step produces an input impulse of weight `setpoint * Kd` at time zero. The lower
+plot shows only the regular part of control effort and explicitly reports the
+omitted impulse. The displayed finite-window response is separate from the
+optimizer's refined validation. Open the notebook from the project root or the
+simulator folder. The plant family does not directly represent ball-on-beam.
