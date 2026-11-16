@@ -1,0 +1,20 @@
+{
+  "source": "first 7000 frozen final-training rows, extended with independent development plants",
+  "training_sizes": [
+    1000,
+    3000,
+    5000,
+    7000,
+    10000,
+    15000,
+    20000
+  ],
+  "validation_source": "same 500 rows from final validation partition at every point",
+  "final_test_used": false,
+  "final_models_refit": false,
+  "settings": "fixed at original 7K validation selections",
+  "old_development_rows_are_training_only": true,
+  "seed_first": 45,
+  "seed_extension": 46,
+  "axis": "training plants; the chosen 10000-row final dataset uses 7000 training plants"
+}

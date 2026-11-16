@@ -1,0 +1,11 @@
+{
+  "seed": 42,
+  "weights": [
+    0.001,
+    0.01
+  ],
+  "plants": 200,
+  "source_sha256": "6f5be47ebe4f82b4c863f1cce3346065093b2cd6cf99e152cf74b310609e38cd",
+  "starts": 4,
+  "purpose": "weight calibration; not an independent final test set"
+}

@@ -1,0 +1,7 @@
+model,accepted,duration_limit,invalid_gains,overshoot,resolution_limit,unstable
+linear,58,0,1,49,22,12
+polynomial_ridge,79,0,4,39,19,1
+random_forest,101,0,0,19,22,0
+ridge,58,0,1,47,22,14
+standard_mlp,118,0,0,2,22,0
+xgboost,111,1,0,8,22,0

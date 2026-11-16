@@ -185,17 +185,22 @@ document.getElementById('reset-pid').addEventListener('click', () => {
 });
 
 function selectSection() {
-  let selected = document.querySelector('main > section:not([hidden])')?.id || 'basics';
-  if (location.hash === '#data-generation') selected = 'data-generation';
-  if (location.hash === '#basics') selected = 'basics';
+  const previous = document.querySelector('main > section:not([hidden])')?.id;
+  let selected = previous || 'overview';
+  const requested = document.getElementById(location.hash.slice(1));
+  if (!location.hash) selected = 'overview';
+  else if (requested?.closest('main > section')) selected = requested.closest('main > section').id;
   document.querySelectorAll('main > section').forEach(section => {section.hidden = section.id !== selected;});
   document.querySelectorAll('.sidebar nav a').forEach(link => {
     const active = link.hash === `#${selected}`;
     link.classList.toggle('active',active);
     if (active) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current');
   });
-  document.title = `ML-PID · ${selected === 'basics' ? 'System basics' : 'Data generation'}`;
+  document.title = `ML-PID · ${{overview:'The study',basics:'System basics','data-generation':'Data generation',models:'Learning to tune',results:'Results & evidence',limitations:'Limits & next steps'}[selected] || 'Research'}`;
   document.querySelector('footer a').setAttribute('href', `#${selected}`);
+  // The destination was hidden when the browser followed the hash. Start each
+  // newly selected tab at the top instead of retaining the previous tab's scroll.
+  if (previous !== selected) window.scrollTo({top: 0, behavior: 'instant'});
 }
 // Commit on Enter or blur so partial input such as "0." remains editable.
 function snapParameter(value, min, max, step) {
@@ -225,3 +230,49 @@ for (const control of [...controls, ...pidControls]) {
 window.addEventListener('hashchange',selectSection);
 selectSection();
 render();
+
+// Make intentional table/diagram scrolling clear and keyboard-accessible.
+let overflowFrame = 0;
+function queueOverflowCues() {
+  if (overflowFrame) return;
+  overflowFrame = requestAnimationFrame(() => {
+    overflowFrame = 0;
+    document.querySelectorAll('.study-table-wrap,.table-wrap,.dataset-row,.feedback-diagram').forEach(region => {
+      if (!region.clientWidth) return;
+      const scrollable = region.scrollWidth > region.clientWidth + 2;
+      let hint = region.nextElementSibling;
+      if (!hint?.classList.contains('scroll-hint')) {
+        if (!scrollable) return;
+        hint = document.createElement('p');
+        hint.className = 'scroll-hint';
+        hint.setAttribute('aria-hidden', 'true');
+        hint.textContent = region.classList.contains('feedback-diagram')
+          ? 'Scroll horizontally to follow the complete diagram →'
+          : 'Scroll horizontally to see every column →';
+        region.after(hint);
+      }
+      hint.hidden = !scrollable;
+      if (scrollable) {
+        region.tabIndex = 0;
+        region.setAttribute('role', 'region');
+        const caption = region.querySelector('caption')?.textContent.trim();
+        region.setAttribute('aria-label', caption ? `Scrollable table: ${caption}` : region.classList.contains('feedback-diagram') ? 'Scrollable feedback diagram' : 'Scrollable data table');
+      } else {
+        region.removeAttribute('tabindex');
+        region.removeAttribute('role');
+        region.removeAttribute('aria-label');
+      }
+    });
+  });
+}
+window.addEventListener('resize', queueOverflowCues);
+window.addEventListener('hashchange', queueOverflowCues);
+new MutationObserver(queueOverflowCues).observe(document.getElementById('main'), {childList: true, subtree: true});
+document.getElementById('main').addEventListener('keydown', event => {
+  const region = event.target;
+  if (region.getAttribute('role') !== 'region' || region.tabIndex !== 0) return;
+  if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+  event.preventDefault();
+  region.scrollBy({left: event.key === 'ArrowRight' ? 120 : -120, behavior: 'instant'});
+});
+queueOverflowCues();

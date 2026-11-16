@@ -1,0 +1,182 @@
+Verified frozen 7000/1500/1500 split; five empirical inputs, normalized targets.
+Validation numerical-reference controllers rechecked.
+Fitting linear_fixed
+linear_fixed: 500/1500 simulations
+linear_fixed: 1000/1500 simulations
+linear_fixed: 1500/1500 simulations
+linear_fixed validation acceptance 28.799999999999997
+Fitting ridge_alpha100
+ridge_alpha100: 500/1500 simulations
+ridge_alpha100: 1000/1500 simulations
+ridge_alpha100: 1500/1500 simulations
+ridge_alpha100 validation acceptance 29.2
+Fitting polynomial_ridge_degree2_alpha1
+polynomial_ridge_degree2_alpha1: 500/1500 simulations
+polynomial_ridge_degree2_alpha1: 1000/1500 simulations
+polynomial_ridge_degree2_alpha1: 1500/1500 simulations
+polynomial_ridge_degree2_alpha1 validation acceptance 44.6
+Fitting random_forest_depth12_leaf3
+random_forest_depth12_leaf3: 500/1500 simulations
+random_forest_depth12_leaf3: 1000/1500 simulations
+random_forest_depth12_leaf3: 1500/1500 simulations
+random_forest_depth12_leaf3 validation acceptance 84.53333333333333
+Fitting random_forest_depthNone_leaf1
+random_forest_depthNone_leaf1: 500/1500 simulations
+random_forest_depthNone_leaf1: 1000/1500 simulations
+random_forest_depthNone_leaf1: 1500/1500 simulations
+random_forest_depthNone_leaf1 validation acceptance 86.93333333333332
+Fitting xgboost_trees150
+xgboost_trees150: 500/1500 simulations
+xgboost_trees150: 1000/1500 simulations
+xgboost_trees150: 1500/1500 simulations
+xgboost_trees150 validation acceptance 83.86666666666667
+Fitting xgboost_trees400
+xgboost_trees400: 500/1500 simulations
+xgboost_trees400: 1000/1500 simulations
+xgboost_trees400: 1500/1500 simulations
+xgboost_trees400 validation acceptance 85.33333333333334
+Fitting standard_mlp_standard
+MLP epoch 25: train loss=0.09492, validation loss=0.09270
+MLP epoch 50: train loss=0.06451, validation loss=0.06301
+MLP epoch 75: train loss=0.05309, validation loss=0.05303
+MLP epoch 100: train loss=0.04774, validation loss=0.04503
+MLP epoch 125: train loss=0.04292, validation loss=0.03869
+MLP epoch 150: train loss=0.03453, validation loss=0.03371
+MLP epoch 175: train loss=0.03158, validation loss=0.03109
+MLP epoch 200: train loss=0.02913, validation loss=0.02749
+MLP epoch 225: train loss=0.02780, validation loss=0.02580
+MLP epoch 250: train loss=0.02610, validation loss=0.02430
+MLP epoch 275: train loss=0.02623, validation loss=0.02404
+MLP epoch 300: train loss=0.02728, validation loss=0.02279
+MLP epoch 325: train loss=0.02610, validation loss=0.02639
+MLP epoch 350: train loss=0.02174, validation loss=0.02073
+MLP epoch 375: train loss=0.02042, validation loss=0.01882
+MLP epoch 400: train loss=0.02356, validation loss=0.01994
+MLP epoch 425: train loss=0.02027, validation loss=0.01733
+MLP epoch 450: train loss=0.01982, validation loss=0.01762
+MLP epoch 475: train loss=0.02015, validation loss=0.01949
+MLP epoch 500: train loss=0.01844, validation loss=0.01728
+standard_mlp_standard: 500/1500 simulations
+standard_mlp_standard: 1000/1500 simulations
+standard_mlp_standard: 1500/1500 simulations
+standard_mlp_standard validation acceptance 95.33333333333334
+All six models and settings locked. Beginning one-time held-out test scoring.
+linear TEST: 500/1500 simulations
+linear TEST: 1000/1500 simulations
+linear TEST: 1500/1500 simulations
+linear test results saved; settings unchanged.
+ridge TEST: 500/1500 simulations
+ridge TEST: 1000/1500 simulations
+ridge TEST: 1500/1500 simulations
+ridge test results saved; settings unchanged.
+polynomial_ridge TEST: 500/1500 simulations
+polynomial_ridge TEST: 1000/1500 simulations
+polynomial_ridge TEST: 1500/1500 simulations
+polynomial_ridge test results saved; settings unchanged.
+random_forest TEST: 500/1500 simulations
+random_forest TEST: 1000/1500 simulations
+random_forest TEST: 1500/1500 simulations
+random_forest test results saved; settings unchanged.
+xgboost TEST: 500/1500 simulations
+xgboost TEST: 1000/1500 simulations
+xgboost TEST: 1500/1500 simulations
+xgboost test results saved; settings unchanged.
+standard_mlp TEST: 500/1500 simulations
+standard_mlp TEST: 1000/1500 simulations
+standard_mlp TEST: 1500/1500 simulations
+standard_mlp test results saved; settings unchanged.
+Learning curve linear 1000
+linear learning 1000: 500/500 simulations
+Learning curve linear 3000
+linear learning 3000: 500/500 simulations
+Learning curve linear 5000
+linear learning 5000: 500/500 simulations
+Learning curve ridge 1000
+ridge learning 1000: 500/500 simulations
+Learning curve ridge 3000
+ridge learning 3000: 500/500 simulations
+Learning curve ridge 5000
+ridge learning 5000: 500/500 simulations
+Learning curve polynomial_ridge 1000
+polynomial_ridge learning 1000: 500/500 simulations
+Learning curve polynomial_ridge 3000
+polynomial_ridge learning 3000: 500/500 simulations
+Learning curve polynomial_ridge 5000
+polynomial_ridge learning 5000: 500/500 simulations
+Learning curve random_forest 1000
+random_forest learning 1000: 500/500 simulations
+Learning curve random_forest 3000
+random_forest learning 3000: 500/500 simulations
+Learning curve random_forest 5000
+random_forest learning 5000: 500/500 simulations
+Learning curve xgboost 1000
+xgboost learning 1000: 500/500 simulations
+Learning curve xgboost 3000
+xgboost learning 3000: 500/500 simulations
+Learning curve xgboost 5000
+xgboost learning 5000: 500/500 simulations
+Learning curve standard_mlp 1000
+MLP epoch 25: train loss=0.25796, validation loss=0.23063
+MLP epoch 50: train loss=0.16884, validation loss=0.14920
+MLP epoch 75: train loss=0.14088, validation loss=0.12494
+MLP epoch 100: train loss=0.12665, validation loss=0.11715
+MLP epoch 125: train loss=0.11213, validation loss=0.10112
+MLP epoch 150: train loss=0.09973, validation loss=0.09716
+MLP epoch 175: train loss=0.09169, validation loss=0.09159
+MLP epoch 200: train loss=0.08462, validation loss=0.08512
+MLP epoch 225: train loss=0.07809, validation loss=0.08047
+MLP epoch 250: train loss=0.07312, validation loss=0.07381
+MLP epoch 275: train loss=0.06855, validation loss=0.06799
+MLP epoch 300: train loss=0.06593, validation loss=0.06451
+MLP epoch 325: train loss=0.06119, validation loss=0.06422
+MLP epoch 350: train loss=0.05862, validation loss=0.06685
+MLP epoch 375: train loss=0.05541, validation loss=0.06275
+MLP epoch 400: train loss=0.05498, validation loss=0.05718
+MLP epoch 425: train loss=0.05311, validation loss=0.05947
+MLP epoch 450: train loss=0.04926, validation loss=0.05983
+standard_mlp learning 1000: 500/500 simulations
+Learning curve standard_mlp 3000
+MLP epoch 25: train loss=0.13342, validation loss=0.12383
+MLP epoch 50: train loss=0.10608, validation loss=0.09805
+MLP epoch 75: train loss=0.08373, validation loss=0.08023
+MLP epoch 100: train loss=0.07096, validation loss=0.06996
+MLP epoch 125: train loss=0.06067, validation loss=0.05805
+MLP epoch 150: train loss=0.05272, validation loss=0.05021
+MLP epoch 175: train loss=0.04705, validation loss=0.04530
+MLP epoch 200: train loss=0.04363, validation loss=0.04406
+MLP epoch 225: train loss=0.04168, validation loss=0.03926
+MLP epoch 250: train loss=0.03912, validation loss=0.03832
+MLP epoch 275: train loss=0.03782, validation loss=0.03768
+MLP epoch 300: train loss=0.03636, validation loss=0.03526
+MLP epoch 325: train loss=0.03653, validation loss=0.03370
+MLP epoch 350: train loss=0.03269, validation loss=0.03359
+MLP epoch 375: train loss=0.03240, validation loss=0.03283
+MLP epoch 400: train loss=0.03280, validation loss=0.03152
+MLP epoch 425: train loss=0.03282, validation loss=0.03163
+MLP epoch 450: train loss=0.03092, validation loss=0.03290
+MLP epoch 475: train loss=0.02904, validation loss=0.02874
+MLP epoch 500: train loss=0.02848, validation loss=0.03003
+standard_mlp learning 3000: 500/500 simulations
+Learning curve standard_mlp 5000
+MLP epoch 25: train loss=0.10882, validation loss=0.10268
+MLP epoch 50: train loss=0.07945, validation loss=0.07855
+MLP epoch 75: train loss=0.06200, validation loss=0.06187
+MLP epoch 100: train loss=0.05298, validation loss=0.05147
+MLP epoch 125: train loss=0.04646, validation loss=0.04835
+MLP epoch 150: train loss=0.04209, validation loss=0.03916
+MLP epoch 175: train loss=0.03593, validation loss=0.03653
+MLP epoch 200: train loss=0.03383, validation loss=0.03385
+MLP epoch 225: train loss=0.03295, validation loss=0.03101
+MLP epoch 250: train loss=0.03051, validation loss=0.03357
+MLP epoch 275: train loss=0.02916, validation loss=0.02958
+MLP epoch 300: train loss=0.02981, validation loss=0.02867
+MLP epoch 325: train loss=0.02627, validation loss=0.02632
+MLP epoch 350: train loss=0.02565, validation loss=0.02549
+MLP epoch 375: train loss=0.02744, validation loss=0.03110
+MLP epoch 400: train loss=0.02469, validation loss=0.02413
+MLP epoch 425: train loss=0.02370, validation loss=0.02489
+MLP epoch 450: train loss=0.02171, validation loss=0.02197
+MLP epoch 475: train loss=0.02241, validation loss=0.02190
+MLP epoch 500: train loss=0.02180, validation loss=0.02124
+standard_mlp learning 5000: 500/500 simulations
+Final 10,000-row study complete.

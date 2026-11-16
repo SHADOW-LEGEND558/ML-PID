@@ -1,0 +1,11 @@
+{
+  "final_lock_unchanged": true,
+  "final_test_rescored": false,
+  "curve_points": 42,
+  "rejected_plants": 83,
+  "rejection_groups": {
+    "resolution_limit": 57,
+    "overshoot": 25,
+    "overshoot+resolution_limit": 1
+  }
+}

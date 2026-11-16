@@ -1,0 +1,15 @@
+{
+  "dataset_sha256": "e86f0039c0747afa186a322bdc89f77b99f03a1ba9aaa77a40c6243e64d97089",
+  "phase": "Saved before any test reference or prediction scoring",
+  "files": {
+    "linear.joblib": "92f47e70c25a9b41e273a36acad3e4d22640d8424515c8ffd3a3955dfd6a4e17",
+    "ridge.joblib": "1596903b63851751be59e4fee3314a694b2bfc43fd1a11e9432ca7b364a37613",
+    "polynomial_ridge.joblib": "ce7a5e9859baabcd1fc4d685131433664a41d28aa97229237b877cc6074c3dac",
+    "random_forest.joblib": "accca6567c5628e132d6ce1667616961f201e49a595bf796a8d308e18b62256f",
+    "xgboost.joblib": "9549eb8c64dcc98084d6dca42db4bff89ac835815d84906ff758ac9ca7138aff",
+    "standard_mlp.pt": "8e4c2848accbb1d613d20df93421df65224f24dac7f9dbc914a844a7023af873",
+    "selected_before_test.csv": "16ea7af3d8833ccd4011beb748954383bef16dbd51a20836114c421a8f36a95f",
+    "evaluation_protocol.json": "97e802d05ab004eddca588807d757b131b8d1ea647549fdf4187427d526307d9",
+    "protocol.json": "b8aa6bf64f04457ad8959ed085a045810030a32d18f8b132644ea6c65f06a38d"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "split_sizes": [
+    15000,
+    2500,
+    2500
+  ],
+  "disjoint": true,
+  "settings_and_models_unchanged_after_lock": true,
+  "test_prediction_roundtrips": 6,
+  "learning_validation_subset": 500,
+  "dataset_unchanged": true,
+  "unit_tests_passed": 29,
+  "versions": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "torch": "2.15.0",
+    "matplotlib": "3.10.9"
+  },
+  "notebooks": {
+    "baseline_validation": {
+      "old_cells_preserved": 30,
+      "new_inline_figures": 10,
+      "errors": 0,
+      "example_revalidation": [
+        "Matching saved outcomes: 10 / 10"
+      ]
+    },
+    "mlp_validation": {
+      "old_cells_preserved": 23,
+      "new_inline_figures": 11,
+      "errors": 0,
+      "example_revalidation": [
+        "Matching saved outcomes: 6 / 6"
+      ]
+    }
+  }
+}

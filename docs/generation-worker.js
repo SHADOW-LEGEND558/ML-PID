@@ -30,9 +30,9 @@ p = json.loads(parameters_json)
 plant = Plant(zeta=p['zeta'], wn=p['wn'], tau=p['tau'], K=p['K'])
 simulator = PlantSimulator()
 times = simulator.get_dynamic_t_eval(plant)
-t_open, y_open = simulator.open_loop(plant, times)
+t_open, y_open = simulator.observe_open_loop(plant)
 features = FeatureExtractor().extract(t_open, y_open)
-emit({'type':'features', 'features':features, 'duration':float(times[-1]),
+emit({'type':'features', 'features':features, 'duration':float(t_open[-1]), 'n_points':len(t_open),
       'points':series(t_open,y_open)})
 
 active_start = -1
@@ -83,11 +83,12 @@ if gains is not None:
     _, y_final = simulator.close_loop(plant, gains, t_final)
     _, y_comparison_open = simulator.open_loop(plant, t_final)
     best = min((record for record in optimizer.diagnostics if record['validation'] == 'accepted'),
-               key=lambda record: record['itae'])
+               key=lambda record: record['objective'])
     initial_start = best['start']
     _, y_initial = simulator.close_loop(plant, PIDGains(*starts[initial_start]), t_final)
     initial = series(t_final,y_initial) if np.all(np.isfinite(y_initial)) and np.max(abs(y_initial))<20 else None
     row = {'zeta':plant.zeta, 'wn':plant.wn, 'tau':plant.tau, 'K':plant.K,
+           'observation_duration':float(t_open[-1]),
            **features, 'Kp':gains.Kp, 'Ki':gains.Ki, 'Kd':gains.Kd}
     payload.update(row=row, metrics=metrics, points=series(t_final,y_final),
                    initial=initial, initial_start=initial_start,

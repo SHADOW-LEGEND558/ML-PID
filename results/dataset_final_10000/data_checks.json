@@ -1,0 +1,37 @@
+{
+  "rows": 10000,
+  "attempts": 10083,
+  "dataset_sha256": "e86f0039c0747afa186a322bdc89f77b99f03a1ba9aaa77a40c6243e64d97089",
+  "seed": 8675309,
+  "zero_delay_rows": 1027,
+  "nonfinite": 0,
+  "duplicate_plants": 0,
+  "development_overlap_at_12_decimals": 0,
+  "upper_bound_hits": 0,
+  "largest_pole_real_part": -0.06786098139605226,
+  "spot_audit_rows": 32,
+  "spot_audit_accepted": 32,
+  "max_spot_feature_difference": 4.440892098500626e-16,
+  "max_spot_dense_overshoot_pct": 7.794396073442211,
+  "max_spot_dense_itae_relative_change": 1.3102771182727387e-05,
+  "split_sizes": {
+    "train": 7000,
+    "validation": 1500,
+    "test": 1500
+  },
+  "strata_counts": {
+    "train": {
+      "zero": 719,
+      "positive": 6281
+    },
+    "validation": {
+      "zero": 154,
+      "positive": 1346
+    },
+    "test": {
+      "zero": 154,
+      "positive": 1346
+    }
+  },
+  "model_evaluation": "Not performed"
+}

@@ -1,0 +1,9 @@
+{
+  "recovered_plants": 142,
+  "predictions": 852,
+  "models_unchanged": true,
+  "accepted_dataset_unchanged": true,
+  "secondary_retry_only_resolution_limits": true,
+  "unit_tests_passed": 30,
+  "notebook_errors": 0
+}

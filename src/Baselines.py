@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 import numpy as np
 
 
@@ -54,14 +53,15 @@ class EvaluateModel:
     def evaluate(self, model: Model, test_dataset: Dataset) -> EvaluationResult:
         predictions = model.predict(test_dataset)
         targets = test_dataset.targets
+        if predictions.shape != targets.shape or not np.isfinite(predictions).all():
+            raise ValueError("Predictions must be finite and match target shape.")
 
         mse = float(np.mean((predictions - targets) ** 2))
         mae = float(np.mean(np.abs(predictions - targets)))
         
         # R2 score calculation
-        ss_res = np.sum((targets - predictions) ** 2)
-        ss_tot = np.sum((targets - np.mean(targets)) ** 2)
-        r2 = float(1.0 - (ss_res / (ss_tot + 1e-8)))
+        from sklearn.metrics import r2_score
+        r2 = float(r2_score(targets, predictions, multioutput="uniform_average"))
 
         return EvaluationResult(
             model_name=model.name,

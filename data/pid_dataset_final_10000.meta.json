@@ -1,0 +1,10 @@
+{
+  "samples": 10000,
+  "attempts": 10083,
+  "seed": 8675309,
+  "n_starts": 4,
+  "gain_penalty": 0.01,
+  "zero_delay_fraction": 0.1,
+  "objective": "wn^2*ITAE + lambda*((K*Kp)^2+(K*Ki/wn)^2+(K*wn*Kd)^2)",
+  "dataset_sha256": "e86f0039c0747afa186a322bdc89f77b99f03a1ba9aaa77a40c6243e64d97089"
+}

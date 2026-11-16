@@ -1,4 +1,6 @@
 import argparse
+import hashlib
+import json
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -29,6 +31,29 @@ class PIDGains:
 
 
 class PlantSimulator:
+    def observe_open_loop(self, plant: Plant, max_duration: float = 640.0) -> tuple[np.ndarray, np.ndarray]:
+        """Extend recording until the measured tail settles; no pole-based window.
+
+        Start at 10 s, double to at most 640 s, and retain 0.01 s sampling.
+        The final 20% must vary by <=0.2% of the estimated final output and
+        its two halves must agree within 0.1%. This is an observation rule
+        for the scoped stable SOPDT family, not general system identification.
+        """
+        self.validate_plant(plant)
+        duration = 10.0
+        while duration <= max_duration:
+            t = np.linspace(0, duration, int(round(duration / 0.01)) + 1)
+            _, y = self.open_loop(plant, t)
+            tail = y[int(0.8 * len(y)):]
+            scale = abs(float(np.mean(tail)))
+            middle = len(tail) // 2
+            if (np.isfinite(y).all() and scale > 1e-8
+                    and np.ptp(tail) <= 0.002 * scale
+                    and abs(np.mean(tail[:middle]) - np.mean(tail[middle:])) <= 0.001 * scale):
+                return t, y
+            duration *= 2
+        raise ValueError('Open-loop observation did not settle within the recording limit.')
+
     def get_dynamic_t_eval(self, plant: Plant, n_points: int = 1000) -> np.ndarray:
         """Computes a dynamic simulation time vector suited to plant dynamics."""
         self.validate_plant(plant)
@@ -181,7 +206,6 @@ class FeatureExtractor:
         out_of_bounds = np.where(np.abs(y - y_ss) > band)[0]
         t_settling = float(t[out_of_bounds[-1]]) if len(out_of_bounds) > 0 else 0.0
 
-        auc = float(spi.simpson(y, x=t))
         idx_delay = np.where(y >= 0.01 * y_ss)[0]
         tau_est = float(t[idx_delay[0]]) if len(idx_delay) > 0 else 0.0
 
@@ -190,13 +214,12 @@ class FeatureExtractor:
             "t_settling": t_settling,
             "y_peak": y_peak,
             "y_ss": y_ss,
-            "AUC": auc,
             "tau_est": tau_est
         }
 
 
 class PIDOptimizer:
-    """Multi-start local ITAE minimization followed by independent validation.
+    """Multi-start regularized, normalized ITAE tuning and independent validation.
 
     All stability/response checks concern the second-order Pade model, not
     an exact-delay guarantee. Resource limits fail closed with diagnostics.
@@ -205,10 +228,14 @@ class PIDOptimizer:
     BOUNDS = np.array([(0.001, 100.0), (0.001, 100.0), (0.0, 50.0)])
 
     def __init__(self, simulator: PlantSimulator, n_starts: int = 4,
-                 max_duration: float = 1000.0, max_validation_points: int = 65537) -> None:
+                 max_duration: float = 1000.0, max_validation_points: int = 65537,
+                 gain_penalty: float = 0.01) -> None:
         if n_starts < 1 or max_duration <= 0 or max_validation_points < 8001:
             raise ValueError("Invalid optimization/validation limits.")
         self.simulator = simulator
+        if not np.isfinite(gain_penalty) or gain_penalty < 0:
+            raise ValueError('Gain penalty must be finite and nonnegative.')
+        self.gain_penalty = gain_penalty
         self.n_starts = n_starts
         self.max_duration = max_duration
         self.max_validation_points = max_validation_points
@@ -262,7 +289,7 @@ class PIDOptimizer:
             metrics = self._evaluate(candidate, plant, t_eval)
             if (metrics['pole_real'] < -1e-8 and np.isfinite(metrics['itae'])
                     and metrics['overshoot'] <= 9.5):
-                pool.append((candidate, metrics['itae']))
+                pool.append((candidate, self.objective_terms(plant, candidate, metrics['itae'])['objective']))
         if not pool:
             return []
         # Prefer useful candidates, then spread starts in log-gain space.
@@ -306,11 +333,24 @@ class PIDOptimizer:
     def _itae_objective(self, gains_vec: np.ndarray, plant: Plant, t_eval: np.ndarray) -> float:
         return self._evaluate(gains_vec, plant, t_eval)['itae']
 
+    def objective_terms(self, plant: Plant, gains_vec: np.ndarray, itae: float) -> dict[str, float]:
+        """Dimensionless tracking and gain costs; not actuator energy."""
+        kp, ki, kd = gains_vec
+        q = plant.K * np.array([kp, ki / plant.wn, plant.wn * kd])
+        normalized_itae = float(plant.wn**2 * itae)
+        penalty = float(self.gain_penalty * np.dot(q, q))
+        return {'normalized_itae': normalized_itae, 'gain_cost': penalty,
+                'objective': normalized_itae + penalty}
+
+    def _regularized_objective(self, gains_vec: np.ndarray, plant: Plant, t_eval: np.ndarray) -> float:
+        return self.objective_terms(plant, gains_vec,
+            self._itae_objective(gains_vec, plant, t_eval))['objective']
+
     def _scaled_itae_objective(self, gains_vec: np.ndarray, plant: Plant,
                                t_eval: np.ndarray, scale: float) -> float:
         # A positive constant scale preserves the minimizer while avoiding huge
         # first SLSQP steps for conservative controllers with large initial ITAE.
-        return self._itae_objective(gains_vec, plant, t_eval) / scale
+        return self._regularized_objective(gains_vec, plant, t_eval) / scale
 
     def _overshoot_constraint(self, gains_vec: np.ndarray, plant: Plant, t_eval: np.ndarray) -> float:
         overshoot = self._evaluate(gains_vec, plant, t_eval)['overshoot']
@@ -409,7 +449,7 @@ class PIDOptimizer:
             {'type': 'ineq', 'fun': self._overshoot_constraint, 'args': (plant, t_eval)},
             {'type': 'ineq', 'fun': self._stability_constraint, 'args': (plant, t_eval)}]
         for start_index, x0 in enumerate(self.initial_guesses):
-            objective_scale = max(1.0, self._itae_objective(x0, plant, t_eval))
+            objective_scale = max(1.0, self._regularized_objective(x0, plant, t_eval))
             res = spo.minimize(self._scaled_itae_objective, x0=x0, args=(plant, t_eval, objective_scale),
                 method='SLSQP', bounds=self.BOUNDS, constraints=constraints,
                 options={'maxiter': 150, 'ftol': 1e-6})
@@ -421,9 +461,10 @@ class PIDOptimizer:
                 metrics, reason = self._validate_candidate(plant, gains, t_eval)
                 record['validation'] = reason
                 if metrics is not None:
-                    record['itae'] = metrics['itae']
-                    if metrics['itae'] < best_score:
-                        best_gains, best_score = gains, metrics['itae']
+                    metrics.update(self.objective_terms(plant, res.x, metrics['itae']))
+                    record.update(metrics)
+                    if metrics['objective'] < best_score:
+                        best_gains, best_score = gains, metrics['objective']
                         self.last_validation = metrics
             else:
                 record['validation'] = 'optimizer_failure'
@@ -431,14 +472,14 @@ class PIDOptimizer:
         return best_gains
 
 
-def _process_single_plant(plant: Plant, n_starts: int = 4) -> Optional[dict[str, float]]:
+def _process_single_plant(plant: Plant, n_starts: int = 4, gain_penalty: float = 0.01) -> Optional[dict[str, float]]:
     simulator = PlantSimulator()
     extractor = FeatureExtractor()
-    optimizer = PIDOptimizer(simulator, n_starts=n_starts)
+    optimizer = PIDOptimizer(simulator, n_starts=n_starts, gain_penalty=gain_penalty)
 
     try:
         t_eval = simulator.get_dynamic_t_eval(plant)
-        t_ol, y_ol = simulator.open_loop(plant, t_eval)
+        t_ol, y_ol = simulator.observe_open_loop(plant)
         features = extractor.extract(t_ol, y_ol)
         gains = optimizer.optimize(plant, t_eval)
 
@@ -454,6 +495,7 @@ def _process_single_plant(plant: Plant, n_starts: int = 4) -> Optional[dict[str,
             "wn": plant.wn,
             "tau": plant.tau,
             "K": plant.K,
+            "observation_duration": float(t_ol[-1]),
             **features,
             "Kp": gains.Kp,
             "Ki": gains.Ki,
@@ -465,13 +507,19 @@ def _process_single_plant(plant: Plant, n_starts: int = 4) -> Optional[dict[str,
 
 
 class DatasetGenerator:
-    def __init__(self, n_samples: int = 5000, seed: int = 42, output_path: str = "data/pid_dataset.csv", n_starts: int = 4, max_attempts: Optional[int] = None) -> None:
+    def __init__(self, n_samples: int = 5000, seed: int = 42, output_path: str = "data/pid_dataset.csv", n_starts: int = 4, max_attempts: Optional[int] = None, zero_delay_fraction: float = 0.1, gain_penalty: float = 0.01) -> None:
         if n_samples < 1 or n_starts < 1:
             raise ValueError("Samples and starting points must be positive.")
         self.n_samples = n_samples
         self.seed = seed
         self.output_path = output_path
         self.n_starts = n_starts
+        if not np.isfinite(gain_penalty) or gain_penalty < 0:
+            raise ValueError('Gain penalty must be finite and nonnegative.')
+        self.gain_penalty = gain_penalty
+        if not 0 <= zero_delay_fraction <= 1:
+            raise ValueError('Zero-delay fraction must be between 0 and 1.')
+        self.zero_delay_fraction = zero_delay_fraction
         self.max_attempts = max_attempts if max_attempts is not None else 10 * n_samples
         if self.max_attempts < n_samples:
             raise ValueError("Maximum attempts must be at least the requested sample count.")
@@ -483,6 +531,7 @@ class DatasetGenerator:
         wns = rng.uniform(0.5, 10.0, count)
         taus = rng.uniform(0.0, 1.0, count)
         Ks = rng.uniform(0.5, 2.0, count)
+        taus[rng.random(count) < self.zero_delay_fraction] = 0.0
 
         return [
             Plant(zeta=float(z), wn=float(w), tau=float(t), K=float(k))
@@ -506,7 +555,7 @@ class DatasetGenerator:
                             f"Only {len(data)}/{self.n_samples} valid plants after {attempted} attempts. "
                             "No output was written. Inspect tuning failures or increase --max-attempts.")
                     plants = self._sample_plants(count=count, rng=rng)
-                    futures = {executor.submit(_process_single_plant, plant, self.n_starts): i
+                    futures = {executor.submit(_process_single_plant, plant, self.n_starts, self.gain_penalty): i
                                for i, plant in enumerate(plants)}
                     accepted = {}
                     for future in as_completed(futures):
@@ -523,6 +572,12 @@ class DatasetGenerator:
         output_file = Path(self.output_path)
         output_file.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(output_file, index=False)
+        metadata = {'samples': len(df), 'attempts': attempted, 'seed': self.seed,
+                    'n_starts': self.n_starts, 'gain_penalty': self.gain_penalty,
+                    'zero_delay_fraction': self.zero_delay_fraction,
+                    'objective': 'wn^2*ITAE + lambda*((K*Kp)^2+(K*Ki/wn)^2+(K*wn*Kd)^2)',
+                    'dataset_sha256': hashlib.sha256(output_file.read_bytes()).hexdigest()}
+        output_file.with_suffix('.meta.json').write_text(json.dumps(metadata, indent=2), encoding='utf-8')
         print(f"Dataset successfully saved to {output_file} ({len(df)} valid records from {attempted} attempts).")
         return df
 
@@ -535,7 +590,9 @@ if __name__ == "__main__":
     parser.add_argument("--starts", type=int, default=4, help="Deterministic PID starting points per plant")
     parser.add_argument("--jobs", type=int, default=-1, help="Worker count; -1 uses the executor default")
     parser.add_argument("--max-attempts", type=int, default=None, help="Total plant attempt limit (default: 10 times --samples)")
+    parser.add_argument('--zero-delay-fraction', type=float, default=0.1, help='Probability of drawing exact zero delay (default: 0.1)')
+    parser.add_argument('--gain-penalty', type=float, default=0.01, help='Dimensionless squared-gain penalty weight; 0 disables regularization')
     args = parser.parse_args()
 
-    generator = DatasetGenerator(n_samples=args.samples, seed=args.seed, output_path=args.output, n_starts=args.starts, max_attempts=args.max_attempts)
+    generator = DatasetGenerator(n_samples=args.samples, seed=args.seed, output_path=args.output, n_starts=args.starts, max_attempts=args.max_attempts, zero_delay_fraction=args.zero_delay_fraction, gain_penalty=args.gain_penalty)
     generator.run(n_jobs=args.jobs)

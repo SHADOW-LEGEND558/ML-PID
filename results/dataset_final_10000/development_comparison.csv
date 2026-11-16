@@ -1,0 +1,7 @@
+model,20K_development_test_pct,10K_final_test_pct
+linear,27.76,29.133333333333333
+ridge,28.24,29.46666666666667
+polynomial_ridge,44.28,41.333333333333336
+random_forest,91.88,86.73333333333333
+xgboost,87.92,84.8
+standard_mlp,97.92,93.73333333333332

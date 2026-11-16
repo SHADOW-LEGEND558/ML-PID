@@ -1,0 +1,7 @@
+{
+  "gain_penalty": 0.001,
+  "samples": 196,
+  "attempts": 200,
+  "sha256": "4e7a5268c858ba1e8f49600d9a193dfb8aa5a2788f630e9f2c3170202ef38e1e",
+  "purpose": "matched weight calibration; not independent final ML evaluation"
+}

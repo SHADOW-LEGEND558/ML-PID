@@ -1,0 +1,145 @@
+{
+  "linear": {
+    "coefficients": 15,
+    "intercepts": 3
+  },
+  "ridge": {
+    "coefficients": 15,
+    "intercepts": 3
+  },
+  "polynomial_ridge": {
+    "coefficients": 60,
+    "intercepts": 3
+  },
+  "random_forest": {
+    "trees": 200,
+    "nodes": 3793626,
+    "max_depth": 33,
+    "mean_max_depth": 26.155,
+    "leaves": 1896913
+  },
+  "xgboost": {
+    "output_models": 3,
+    "trees_per_output": [
+      400,
+      400,
+      400
+    ],
+    "max_depth": 6,
+    "booster_config": {
+      "learner": {
+        "generic_param": {
+          "device": "cpu",
+          "fail_on_invalid_gpu_id": "0",
+          "n_jobs": "4",
+          "nthread": "4",
+          "random_state": "42",
+          "rng_state": "2a b93c8a93 71014437 e87acf51 b4a4ad5e f342a151 a2dc8760 5122dbb1 ec21dc78 33b6cf90 a923f3da c395cc43 ea27d54c dc076f38 b8127555 6974da62 e0ae241f a2cb3b1d aeaaea4d 1cfbb83e 569ade8a c5ff2fec d1ddd061 8bb5a8c1 3750f007 a79371dc ca2dbab0 dbd973ba 51c7a919 dceb8e95 6657874c 670b9680 64a46a05 47b5f7b5 62460e26 1a477486 5336af02 2550a754 e5a9f84a 27ed05f4 b25eed6c 12858a8f e3bf3195 cf11d659 1235bbae 7a6529d3 2a08e208 e4af7557 c44f3e54 44012784 a33dc4ab 223c07e0 5905fb94 1011fefe 1981886c ad109ed3 b04381ad ad1d144 f6a0f40e 98763e5c ca98e952 50676632 5de19d5d e4bd518b 2a0af2e8 f6a7fdc9 5f9e3af4 5fad5fec 2337adc5 8d58fbfe 96d946b2 f95d13b7 ab301a4c e8301f0f 44edac06 b059e0e 952ed9d2 a2bc3f5d c1c7d7c9 84d93d01 9a70ad7f b5b757a2 b49a3272 66e3d683 3b3d339e 3116ebab 37d67dcd bd8d5738 4707743a 14c16ea0 3ae4457a c393b37d 44c63f12 f77d0ddc 5dbd059 30a7d47c 2251314c 667e1f5d 9a0e9bae 6ac6773f c0cf39da 18a5f402 d1c5730 f9271657 43aac38c e9e09c0a 895d60f7 2d6d5e14 760ad250 49095362 da02e17d e0416525 44f83e6e 9863093c 87b6d3e8 e5efd5c5 71704d92 fdd74674 7be57c69 f7f5bd7f d4bf1e64 7f7d1e1c 504566eb 57dad4cd a6cb20f8 e19fcd1f f493e88a cd8b0f8c 4419aaeb fefda8d3 b71aea92 cf159b53 42d41714 5b9a58ce 7f14d131 3f793877 a94bf67b 3b2dff46 79ac2d28 ad37c2b8 f94b5dee 3d7ae40e 29e97814 32eb1473 f7d59cef f2b535ad 9afa4c38 a5211d75 e1164f87 9af703a9 9217f60d 848b1b82 7d195a18 eee6ed76 b0624cc3 b72291c0 94f25426 ef9e76d1 2ed94378 391ad6f7 f961ff13 8e9931f1 1fd0c081 f3e7fc88 ec7a067b 66e2c5fd ad4ff912 bc46d3f7 5712bd51 4ee48139 91d5f3c2 b31aeb6b cd791219 522a0eef bd174294 26e98bdd 650873e1 d789811 2e6c1867 4885c056 27147207 6e47bc78 19791d73 2fb02a16 85a06166 6620f12d 1443b316 67266e69 281737c4 745ce511 a2abf00e d1a0217b f05e6d18 bd617f68 188cff94 91730a27 d5d3ce5d 292b9db 256872d e8b56a88 73646c9f e511691f 60e274d6 4fc0289e 7ce61e87 cac9c1ab 25d45016 4395f7d b7279221 32c663a0 6cf5eef2 a68c51b2 48e36b44 8104400e fd47b192 5246a80c 5a2a42f9 a54b24b1 f22e4679 b54f18fd 1f8e5477 219c02d0 93be6cee bcdf45fb f657dd1d e9d14bb7 430232e6 756cb506 67f52ba7 71a00f63 400f8490 6007e71c ab97b459 34dbdbd0 461009fa 638843f2 90c4dacb 3e3ee33a e4ffb0d0 846af2e 49e4bc16 68878504 82ca28eb 3405d5e0 fee24254 2925bc48 f39dd15e 87d95fa8 429ab90a c75ee550 ba6ee5b9 12ceb6c2 e2a9ed86 f7c9e376 61935b27 e0f44cfd c0884f36 6e9d9dea 731f11b9 27c5769b ff9dbf2b 5ea0d3cd 415fbc82 723c7bb6 612bf3b 8c590650 c7bf6164 57728dae 81cd8e17 f5b54c56 e8b39b97 9e2a9673 fa66d4a5 aae8bc8f 9e94d9b3 d9109ce8 f5f4accb 137733fd a0c4e8e7 c8957070 b347e977 f581b942 c518e0bf 88394747 74a00c55 7009d241 3524345e 6de0f835 7801c1a4 30d5b43a 7592604 55a024b7 44cde2f2 c539604 625e54ba 7fac81ee 12212b73 9b7bb088 950c819c b29eb281 8bb989db bbe784ca 9de6c16 29326bdd 6ba8d461 21e32b11 4a2317e7 b6ec84f1 e51b8013 5bd21785 fd14ec4a 4db34b04 c4054731 338cd9f3 30da0919 c092f918 d508bbe3 5c1d009d b108baca ffdeba27 6b78b574 51ee356a 677e5779 75efbb9b ec306f06 3fa87b3e ce1ecebc a04c9a2 5f394032 7a56a068 4ee47bb7 90533619 5785ccf3 d5155ec7 c88148a2 3346d1d4 4e073df4 b6b68ffa 58da862a cf30f34a 63810e21 3559b3f5 55651dff c7e3c48d 8ee8b5e a6444b6f 314a185b 27c15042 2d05fd66 edc2909b 14c6556 72b9024d 654c955c 44b0b412 9a9a37e1 d1f588f2 a6bf0179 ef8369ec 8c12b3b1 b370b206 a8d660fc 256e339f 3b737625 15ca6b04 893d5e00 66932a37 29208ebc dd5eed9b c2c21668 757f1ca8 761bc11f 631e4049 6d4de5dc 54c9f6a6 bb3eb059 a299485e f8b6c9c4 6a8a1bfc 7162714b bb7d4dad facb4e87 94d69f91 f517a17d ea312635 8650face 3fbe1ffd 810c0553 a9cd7378 9130daa6 97c40839 e65bd3cd b935cfcd e119c533 3e017d79 bd0b4347 8f5478c4 965f9daa aeb01cd5 a8cb7161 55a6b89e 23ecef4b 27968d28 ec081a5a b9bb07b0 abc64cce de97a11 f1e7434b 6a3714ff 1ce937ce a58243df 19c10ccb 768fb0b2 525833b 95a45ae4 82c6f45c 67d6b8b5 dd7b34a4 355a2684 8c9d7b6 2a0c8271 85d4f139 3eb8c0ec 74966ac2 adcf7b96 6d09f70c 977f6eca 5f07be92 dd0fdcaa 8f78159 134daaca 11907d60 2eb9d88f 241ff91b 90a9bc58 7397b34 eb087137 47557f38 6c5fb432 6a9664d5 bb173d5b 796ed6d5 897e375d 6206b135 9e4bf3f 20512c97 1d046850 68bff94e 3551a4ea f4dd4c12 497b1d76 e29850b5 e6433f91 2a8b385e 7ca98cdb bd3b3dc8 44f67c79 25235520 635eb769 c85d05d2 29872640 c18a590c 28a72bb8 5261b966 52974672 fb87582f a3c9572d 94608e5d 2ee2044e 799b729a b0e62bfc 544c4b0c 9f9e92f8 530dc87a 8416ed60 37c31b84 da4f80ef c3d02af8 b8fe49e4 1f293f9c eb94966b 72f500e8 ca850ece ff058dc3 764caea3 d42399ce 6ff564c6 34304369 8efccb54 89e740d6 5fba098d a655b226 8b208e1f 6eb0985d 27b95a39 60f81b6b 80748cc1 2aa4e5df 6f2c09ec af2ac173 f37acc88 2b617cb cf20080c 685c36e1 85df8857 7794881 422da5de 26dfc9f5 fb11cca4 a11c1edf b0a7742e c70635a bcf85e81 522666af 2cdba2a7 23438ce5 8650255c 8f300e1a b828697d bedf9821 e396c2d6 a891dd11 a0606588 db24eb7c 3c10e226 f2b9910a d5130b9a 1ee7766b 709dfd46 dbd0ee13 cb447e61 a65650bc 2e758b09 d506ada1 b5fc34ff f3c74ee7 2f16260b 1c65e76f e517b7e4 8f172f3d bb275cf6 61f24260 6c11b62 198541c8 8e3efe07 e2ede719 223f1963 bd300131 e0f9c642 456b02c9 1b2d230d 51ebcb47 98b9aac5 3d15e1ab 1f138da0 18e1824a 47b8035d ace99178 a956b14f 89312a8f 160640d0 8ed6e440 70bd623b fbdecd14 ea493b46 5a7f516d a0c1edd1 b98dc175 8fb7052a a90f7300 f4b27403 367bc63a 9f80411d 6c4c4a77 5f2c88cb 574c13f0 5f46d954 4e953dc9 ef696a29 7d8d5ed4 a459694c 79c34c0a 460be59c 83dd9e37 4f8cca30 ee17009d eab9ce9f 812401d6 b4fb2eef 17b15acd 3a2b8a2e 6f622474 d26e0178 d28e6ad7 a5279bf5 d2d8b9c5 c7564371 bf3ea04e 6991ec51 f4390de6 e0350ab0 a68c05f7 2a217902 b004d224 cd674159 d2bf4de 12746bf3 d58a43d ed887370 68c319bf 99f1d857 ef82d8eb 530bbdeb f5aa29b6 7c6753ce ff46da11 3025ad81 533e7f4d d4dbe765 561e3a8 9c0bbbb3 a5e9c841 4f3cdfdc 31dc999f 197b52a",
+          "seed": "42",
+          "seed_per_iteration": "0",
+          "validate_parameters": "1"
+        },
+        "gradient_booster": {
+          "dart_train_param": {
+            "normalize_type": "tree",
+            "one_drop": "0",
+            "rate_drop": "0",
+            "sample_type": "uniform",
+            "skip_drop": "0"
+          },
+          "gbtree_model_param": {
+            "num_parallel_tree": "1",
+            "num_trees": "400"
+          },
+          "gbtree_train_param": {
+            "process_type": "default",
+            "tree_method": "auto",
+            "updater": "grow_quantile_histmaker",
+            "updater_seq": "grow_quantile_histmaker"
+          },
+          "name": "gbtree",
+          "specified_updater": false,
+          "tree_train_param": {
+            "alpha": "0",
+            "colsample_bylevel": "1",
+            "colsample_bynode": "1",
+            "colsample_bytree": "1",
+            "eta": "0.0799999982",
+            "gamma": "0",
+            "grow_policy": "depthwise",
+            "interaction_constraints": "",
+            "lambda": "1",
+            "learning_rate": "0.0799999982",
+            "max_bin": "256",
+            "max_cat_threshold": "64",
+            "max_cat_to_onehot": "4",
+            "max_delta_step": "0",
+            "max_depth": "6",
+            "max_leaves": "0",
+            "min_child_weight": "1",
+            "min_split_loss": "0",
+            "monotone_constraints": "()",
+            "refresh_leaf": "1",
+            "reg_alpha": "0",
+            "reg_lambda": "1",
+            "sampling_method": "uniform",
+            "sparse_threshold": "0.20000000000000001",
+            "subsample": "1"
+          },
+          "updater": [
+            {
+              "hist_train_param": {
+                "debug_synchronize": "0",
+                "max_cached_hist_node": "18446744073709551615"
+              },
+              "name": "grow_quantile_histmaker"
+            }
+          ]
+        },
+        "learner_model_param": {
+          "base_score": "[1.5007331E0]",
+          "boost_from_average": "1",
+          "num_class": "0",
+          "num_feature": "5",
+          "num_target": "1"
+        },
+        "learner_train_param": {
+          "booster": "gbtree",
+          "disable_default_eval_metric": "0",
+          "multi_strategy": "one_output_per_tree",
+          "objective": "reg:squarederror"
+        },
+        "metrics": [
+          {
+            "name": "rmse"
+          }
+        ],
+        "objective": {
+          "name": "reg:squarederror",
+          "reg_loss_param": {
+            "scale_pos_weight": "1"
+          }
+        }
+      },
+      "version": [
+        3,
+        4,
+        1
+      ]
+    }
+  },
+  "standard_mlp": {
+    "parameters": 11203,
+    "weights": 10976,
+    "architecture": [
+      5,
+      128,
+      64,
+      32,
+      3
+    ],
+    "best_epoch": 413,
+    "epochs_executed": 463,
+    "torch_threads": 2
+  }
+}

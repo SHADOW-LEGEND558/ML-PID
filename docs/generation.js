@@ -94,7 +94,7 @@ function generationWindowPoints(points, end) {
     for(const id of ['sample-stability','sample-overshoot','sample-itae','sample-convergence']) byId(id).textContent='—';
     byId('sample-row').replaceChildren();
     const note=document.createElement('p');note.className='empty-cell';
-    note.textContent='Each accepted row contains 4 plant parameters, 6 response features, and 3 PID target gains.';
+    note.textContent='Each accepted row contains 4 plant parameters, 5 response features, 3 PID target gains, and the observation duration as metadata.';
     byId('sample-row').append(note);
     byId('sample-response-status').textContent='AWAITING RESULT';
     byId('sample-initial-legend').hidden=true;
@@ -117,8 +117,8 @@ function generationWindowPoints(points, end) {
       const t=duration*i/999;return [t,plantResponse(t,p.K,p.wn,damping,p.tau)];
     });
     chart('sample-open-chart',[{points,className:'response-line'}],duration);
-    byId('sample-equation').textContent=
-      `G(s) = ${format(p.K*p.wn*p.wn)} / (s² + ${format(2*p.zeta*p.wn)}s + ${format(p.wn*p.wn)}) × exp(−${p.tau.toFixed(2)}s)`;
+    byId('sample-equation').innerHTML=
+      `<span>G(s) = <span class="fraction"><span>${format(p.K*p.wn*p.wn)}</span><span>s<sup>2</sup> + ${format(2*p.zeta*p.wn)}s + ${format(p.wn*p.wn)}</span></span> e<sup>−${p.tau.toFixed(2)}s</sup></span>`;
     byId('sample-regime').textContent=p.zeta<1?'UNDERDAMPED':p.zeta>1?'OVERDAMPED':'CRITICALLY DAMPED';
     resetResults();
     status('Plant ready. Run it through the pipeline.',
@@ -161,7 +161,10 @@ function generationWindowPoints(points, end) {
       const cell=document.createElement('div');
       if(['Kp','Ki','Kd'].includes(key))cell.className='target';
       const label=document.createElement('span'),number=document.createElement('strong');
-      label.textContent=key;number.textContent=format(value);number.title=String(value);
+      const symbols={K:'K',wn:'ω<sub>n</sub>',zeta:'ζ',tau:'τ',t_rise:'t<sub>rise</sub>',t_settling:'t<sub>settling</sub>',
+        y_peak:'y<sub>peak</sub>',y_ss:'y<sub>ss</sub>',tau_est:'τ<sub>est</sub>',Kp:'K<sub>p</sub>',Ki:'K<sub>i</sub>',Kd:'K<sub>d</sub>',observation_duration:'Observation / s'};
+      if(symbols[key])label.innerHTML=symbols[key];else label.textContent=key;
+      number.textContent=format(value);number.title=String(value);
       cell.append(label,number);grid.append(cell);
     }
     byId('sample-row').replaceChildren(grid);
@@ -198,7 +201,7 @@ function generationWindowPoints(points, end) {
         const key=node.dataset.feature;
         node.textContent=format(data.features[key])+(['t_rise','t_settling','tau_est'].includes(key)?' s':'');
       }
-      byId('feature-window').textContent=`1,000 POINTS / ${data.duration.toFixed(2)} s`;
+      byId('feature-window').textContent=`${data.n_points.toLocaleString()} POINTS / ${data.duration.toFixed(2)} s`;
       chart('sample-open-chart',[{points:data.points,className:'response-line'}],data.duration);
     } else if(data.type==='screening') {
       stage(2,'active','Screening starting gains');
@@ -248,8 +251,8 @@ function generationWindowPoints(points, end) {
       const m=result.metrics;
       stage(3,'complete','Accepted');
       status('One validated training example, ready.',
-        'The selected controller has the lowest ITAE among those that passed validation. The chart focuses on the changing part of the response; metrics use the full simulation. Its search is highlighted in the table.','done');
-      const best=result.diagnostics.filter(d=>d.validation==='accepted').reduce((a,b)=>a.itae<=b.itae?a:b);
+        'The selected controller has the lowest regularized objective among those that passed validation. The chart focuses on the changing part of the response; metrics use the full simulation. Its search is highlighted in the table.','done');
+      const best=result.diagnostics.filter(d=>d.validation==='accepted').reduce((a,b)=>a.objective<=b.objective?a:b);
       byId(`sample-start-${best.start}`).classList.add('best');
       comparisonResult=result;
       renderComparison(result);
@@ -289,11 +292,12 @@ function generationWindowPoints(points, end) {
     });
   }
   byId('sample-random').addEventListener('click',()=>{
-    const random=new Uint32Array(4);crypto.getRandomValues(random);
+    const random=new Uint32Array(5);crypto.getRandomValues(random);
     sliders.forEach((control,i)=>{
       control.value=snapParameter(Number(control.min)+(Number(control.max)-Number(control.min))*random[i]/4294967296,
         Number(control.min),Number(control.max),0.01);
     });
+    if(random[4]/4294967296 < 0.1)byId('sample-tau').value='0';
     preview();
   });
   byId('sample-run').addEventListener('click',()=>{

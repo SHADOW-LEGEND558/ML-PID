@@ -10,6 +10,29 @@ from data_gen import Plant, PIDGains, PlantSimulator, PIDOptimizer
 
 
 class PIDOptimizationTests(unittest.TestCase):
+    def test_regularized_objective_is_dimensionless_and_decomposed(self):
+        sim = PlantSimulator()
+        opt = PIDOptimizer(sim, gain_penalty=.01)
+        p = Plant(.7,2,0,1)
+        terms = opt.objective_terms(p, np.array([2.,4.,1.]), .5)
+        self.assertAlmostEqual(terms['normalized_itae'], 2)
+        self.assertAlmostEqual(terms['gain_cost'], .12)
+        self.assertAlmostEqual(terms['objective'], 2.12)
+        scaled = opt.objective_terms(Plant(.7,4,0,2), np.array([1.,4.,.25]), .125)
+        self.assertAlmostEqual(scaled['objective'], terms['objective'])
+        self.assertAlmostEqual(PIDOptimizer(sim, gain_penalty=0).objective_terms(p,
+            np.array([2.,4.,1.]), .5)['objective'], 2)
+        with self.assertRaises(ValueError):
+            PIDOptimizer(sim, gain_penalty=-.01)
+
+    def test_zero_delay_regularization_avoids_upper_bounds(self):
+        sim = PlantSimulator()
+        opt = PIDOptimizer(sim)
+        gains = opt.optimize(Plant(.7,2,0,1), sim.get_dynamic_t_eval(Plant(.7,2,0,1)))
+        self.assertIsNotNone(gains)
+        if gains is not None:
+            self.assertTrue(np.all(np.array([gains.Kp,gains.Ki,gains.Kd]) < opt.BOUNDS[:,1] - 1e-5))
+
     def setUp(self):
         self.sim = PlantSimulator()
 
@@ -91,8 +114,8 @@ class PIDOptimizationTests(unittest.TestCase):
         self.assertLessEqual(validation['overshoot_pct'], 10 + 1e-6)
         self.assertLess(validation['tail_error'], 1e-3)
         self.assertLess(validation['max_pole_real'], 0)
-        accepted = [r['itae'] for r in opt.diagnostics if r['validation'] == 'accepted']
-        self.assertEqual(validation['itae'], min(accepted))
+        accepted = [r['objective'] for r in opt.diagnostics if r['validation'] == 'accepted']
+        self.assertEqual(validation['objective'], min(accepted))
 
     def test_previously_unstable_starts_are_replaced_by_feasible_seeds(self):
         plant = Plant(0.11, 4.77, 0.56, 1.72)

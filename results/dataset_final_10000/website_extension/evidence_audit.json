@@ -1,0 +1,22 @@
+{
+  "final_model_selection_and_protocol_hashes_unchanged": true,
+  "final_dataset_hash_unchanged": true,
+  "same_500_validation_plants_verified_for_all_extended_points": true,
+  "final_test_used_for_extension": false,
+  "final_dataset_sha256": "e86f0039c0747afa186a322bdc89f77b99f03a1ba9aaa77a40c6243e64d97089",
+  "development_dataset_sha256": "0bd540d44914e6dfcb76179688639203004f0a6ec3ac161ea7ca4c399dae2ba0",
+  "training_points": 42,
+  "rejected_plants": 83,
+  "mlp_expanded_outcomes": {
+    "accepted": 64,
+    "resolution_limit": 15,
+    "overshoot": 4
+  },
+  "timing_plants_from_validation": 20,
+  "browser_parity": {
+    "examples": 64,
+    "maxAbsolute": 5.783381318735792e-06,
+    "maxRelative": 1.9517188616216743e-06,
+    "modelSha256": "8e4c2848accbb1d613d20df93421df65224f24dac7f9dbc914a844a7023af873"
+  }
+}

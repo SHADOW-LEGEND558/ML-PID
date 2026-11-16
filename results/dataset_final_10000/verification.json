@@ -1,0 +1,21 @@
+{
+  "split_sizes": {
+    "train": 7000,
+    "validation": 1500,
+    "test": 1500
+  },
+  "dataset_hash_unchanged": true,
+  "all_locked_artifact_hashes_unchanged": true,
+  "saved_prediction_max_abs_difference": {
+    "linear": 0.0,
+    "ridge": 0.0,
+    "polynomial_ridge": 0.0,
+    "random_forest": 2.1316282072803006e-14,
+    "xgboost": 0.0,
+    "standard_mlp": 0.0
+  },
+  "validation_reference_accepted": 1500,
+  "test_reference_accepted": 1500,
+  "test_scored_once_per_model": true,
+  "seconds": 1078.5060755000013
+}

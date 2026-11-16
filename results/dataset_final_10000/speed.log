@@ -1,0 +1,35 @@
+Optimizer 1/20: 1.345s, accepted=True
+Optimizer 2/20: 1.778s, accepted=True
+Optimizer 3/20: 1.328s, accepted=True
+Optimizer 4/20: 1.325s, accepted=True
+Optimizer 5/20: 2.283s, accepted=True
+Optimizer 6/20: 1.390s, accepted=True
+Optimizer 7/20: 1.262s, accepted=True
+Optimizer 8/20: 1.436s, accepted=True
+Optimizer 9/20: 1.532s, accepted=True
+Optimizer 10/20: 1.405s, accepted=True
+Optimizer 11/20: 1.350s, accepted=True
+Optimizer 12/20: 1.255s, accepted=True
+Optimizer 13/20: 1.392s, accepted=True
+Optimizer 14/20: 1.413s, accepted=True
+Optimizer 15/20: 1.305s, accepted=True
+Optimizer 16/20: 2.192s, accepted=True
+Optimizer 17/20: 1.399s, accepted=True
+Optimizer 18/20: 1.135s, accepted=True
+Optimizer 19/20: 1.493s, accepted=True
+Optimizer 20/20: 1.269s, accepted=True
+linear prediction and validation measured.
+ridge prediction and validation measured.
+polynomial_ridge prediction and validation measured.
+random_forest prediction and validation measured.
+xgboost prediction and validation measured.
+standard_mlp prediction and validation measured.
+Optimizer median seconds: 1.3907392000000982
+                  plants  passes  median_prediction_ms  median_validation_ms  median_prediction_plus_validation_ms  median_prediction_speedup  median_verified_speedup  verified_pairs
+model                                                                                                                                                                                 
+linear                20       5               0.49415              84.17670                              84.66270                2832.364686                14.210046               5
+ridge                 20       5               0.48600              84.07070                              84.55820                2818.672055                15.356738               5
+polynomial_ridge      20       8               0.58100              85.42160                              86.04610                2390.685733                17.233548               8
+random_forest         20      17              24.39800             115.97465                             140.52765                  56.639634                 9.288753              17
+xgboost               20      16               1.95785             120.58820                             122.50415                 723.564806                11.741539              16
+standard_mlp          20      19               0.14415             115.75325                             115.91285                9554.015682                11.555231              19

@@ -15,7 +15,7 @@ from data_gen import DatasetGenerator
 class DatasetCountTests(unittest.TestCase):
     def test_failed_plants_are_replaced_with_new_samples(self):
         seen = []
-        def worker(plant, starts):
+        def worker(plant, starts, gain_penalty):
             seen.append(plant)
             return None if len(seen) in (1, 4) else {'K': plant.K}
         with tempfile.TemporaryDirectory() as directory:
@@ -44,7 +44,7 @@ class DatasetCountTests(unittest.TestCase):
     def test_replacement_sampling_and_results_are_reproducible(self):
         def run_once(directory, name):
             calls = [0]
-            def worker(plant, starts):
+            def worker(plant, starts, gain_penalty):
                 calls[0] += 1
                 return None if calls[0] == 2 else {'K': plant.K, 'tau': plant.tau}
             with patch('data_gen.ProcessPoolExecutor', ThreadPoolExecutor), \

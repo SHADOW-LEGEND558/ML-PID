@@ -1,0 +1,6 @@
+family,passes,overshoot_misses,10_to_12,over_20,unstable,unmeasured_stable
+linear,230,311,11,259,256,1
+ridge,251,309,11,237,236,3
+polynomial_ridge,352,301,21,195,141,5
+random_forest,530,250,35,110,19,1
+xgboost,557,237,37,99,6,0

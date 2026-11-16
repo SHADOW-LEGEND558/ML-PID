@@ -1,0 +1,42 @@
+{
+  "rows": 1000,
+  "zero_delay_rows": 86,
+  "upper_bound_hits": 0,
+  "validation": {
+    "accepted": 1000
+  },
+  "max_dense_overshoot_pct": 9.999310247485749,
+  "max_dense_itae_relative_change": 0.00010316237937072221,
+  "max_feature_difference": 3.552713678800501e-15,
+  "max_duration_difference": 0.0,
+  "max_relative_final_value_error": 0.0005688927269665855,
+  "max_relative_peak_error": 0.0008003489238408434,
+  "max_tail_error": 8.414462460137884e-10,
+  "parameter_quartile_counts": {
+    "K": [
+      256,
+      247,
+      254,
+      243
+    ],
+    "wn": [
+      268,
+      232,
+      238,
+      262
+    ],
+    "zeta": [
+      271,
+      244,
+      248,
+      237
+    ],
+    "tau": [
+      299,
+      229,
+      240,
+      232
+    ]
+  },
+  "dataset_sha256": "f2ef547e17b28d678768caa91385717e25aa4d6a6af5f5835486f71a153ac270"
+}

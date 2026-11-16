@@ -1,0 +1,7 @@
+model,plants,strict_passes,stable,extended_passes
+linear,83,4,72,35
+polynomial_ridge,83,11,82,43
+random_forest,83,7,83,46
+ridge,83,4,70,34
+standard_mlp,83,21,83,64
+xgboost,83,18,82,57
