@@ -1,0 +1,5 @@
+model,cases,passes,success_pct,base_plants,cluster_ci_low,cluster_ci_high,reason_counts,overshoot_measured,overshoot_median,overshoot_p95,overshoot_max,overshoot_over_20_count
+random_forest,100,68,68.0,100,59.0,77.0,"{""overshoot"": 32, ""time_domain_pass"": 68}",100,6.443673371892755,21.126435198957154,80.41063759313897,7
+xgboost,100,68,68.0,100,59.0,77.0,"{""overshoot"": 32, ""time_domain_pass"": 68}",100,6.602361571819138,20.15955338754164,68.68683064293275,6
+standard_mlp,100,84,84.0,100,77.0,91.0,"{""overshoot"": 16, ""time_domain_pass"": 84}",100,5.400825141299048,16.513151522651967,33.228818765978204,2
+numerical_reference,100,89,89.0,100,83.0,95.0,"{""overshoot"": 11, ""time_domain_pass"": 89}",100,3.723400275378741,15.188033743502075,28.272779888110545,3

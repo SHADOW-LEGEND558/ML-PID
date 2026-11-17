@@ -1,6 +1,0 @@
-family,raw_mse_pass_pct,raw_control_pass_pct,normalized_mse_pass_pct,normalized_control_pass_pct
-linear,18.0,18.0,28.75,28.75
-ridge,20.375,20.375,31.375,31.375
-polynomial_ridge,30.5,30.5,44.0,44.0
-random_forest,59.12500000000001,59.12500000000001,65.875,66.25
-xgboost,56.125,66.625,64.75,69.625

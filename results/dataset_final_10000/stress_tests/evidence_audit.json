@@ -1,0 +1,22 @@
+{
+  "frozen_hashes_match": true,
+  "controller_outcomes": 14964,
+  "expected_outcomes_by_test": {
+    "noise": 7200,
+    "uncertainty": 6000,
+    "boundary": 964,
+    "exact_delay": 400,
+    "disturbance": 400
+  },
+  "all_model_case_pairs_unique": true,
+  "nominal_controller_count": 400,
+  "source_hashes": {
+    "scripts\\run_stress_suite.py": "65fa49b97f3650af3839c0fe618e0e9e0969b27981b9820ad743708d9eb5ae49",
+    "scripts\\report_stress_suite.py": "94c8a79877b0dc1e12e7dc6c0b455ebff435a3098713adde9aa4dce95d592723",
+    "scripts\\check_true_delay_stress.py": "5a80554b9c905273e610ea511dcaf0ee6079589b64e10fc123be59ddf20c3811",
+    "src\\data_gen.py": "d0a7994204d03b6c61284b7d37d8f12a647dc50177a19877fcc85d1f194c0a6c",
+    "src\\benchmark.py": "8bc3793b2088f0a364dc05e68abc4e63496835c29cec6ee67586163401de2d46"
+  },
+  "independent_delay_crosschecks": 5,
+  "independent_delay_max_curve_error": 5.9829213747966334e-05
+}

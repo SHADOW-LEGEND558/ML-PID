@@ -237,4 +237,4 @@ All 1500/1500 validation and 1500/1500 test numerical-reference controllers pass
 
 One split and training seed; a noise-free stable positive-gain SOPDT family in fixed ranges; ideal differentiation and second-order Pade delay; no actuator saturation, exact-delay robustness or hardware validation. Accepted-label filtering excludes teacher failures and can bias the main population. Results do not establish a universal or safety-certified tuner.
 
-Artifacts: saved models, candidate/selected settings, immutable split and selection lock, per-plant test/validation predictions, reference checks, histories, learning curves and plots are stored alongside this report. The website retains the separately labeled 20K development results until explicitly updated.
+Artifacts: saved models, candidate/selected settings, immutable split and selection lock, per-plant test/validation predictions, reference checks, histories, learning curves and plots are stored alongside this report. The website presents the final 10K study; additional development curves, stress tests and response diagnostics retain their own scopes.

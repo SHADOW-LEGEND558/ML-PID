@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results/dataset_final_10000"
 sys.path.insert(0, str(ROOT / "src"))
-from plot_baselines import (LABELS, style, performance_plot, prediction_plot, failure_plot,
+from plotting import (LABELS, style, performance_plot, prediction_plot, failure_plot,
     objective_plot, itae_plot, overshoot_plot, overshoot_bins_plot, overshoot_summary)
 
 NAMES = ["linear", "ridge", "polynomial_ridge", "random_forest", "xgboost", "standard_mlp"]
@@ -102,7 +102,7 @@ def report():
     gains.to_csv(OUT / "gain_errors.csv", index=False)
     selected = pd.read_csv(OUT / "selected_before_test.csv")
     curves = pd.read_csv(OUT / "learning_curves.csv").sort_values(["model","training_size"])
-    old = pd.read_csv(ROOT / "results/dataset_20000/test_metrics.csv").set_index("model")
+    old = pd.read_csv(ROOT / "results/dataset_final_10000/development_reference/20000_test_metrics.csv").set_index("model")
     comparison = pd.DataFrame({"20K_development_test_pct":old.success_pct,"10K_final_test_pct":metrics.success_pct})
     comparison.to_csv(OUT / "development_comparison.csv")
     lines = ["# Final 10,000-plant evaluation", "", "## Protocol", "",
@@ -138,10 +138,14 @@ def report():
     lines += ["", "## Development-study context", "", "Different cohorts and test sets: these percentages are descriptive, not a controlled causal comparison of training sizes. The within-cohort learning curves are more informative about sample-size trends.", ""] + markdown_table(comparison.reset_index(),["model","20K_development_test_pct","10K_final_test_pct"])
     lines += ["", "## Verification", "", f"All {verification['validation_reference_accepted']}/1500 validation and {verification['test_reference_accepted']}/1500 test numerical-reference controllers passed revalidation. All saved models reproduced their scored gains (max differences: {verification['saved_prediction_max_abs_difference']}). Dataset, prepared split, selected settings and saved-model hashes remained unchanged after locking. Final test scoring occurred once per model.", "",
         "## Limits", "", "One split and training seed; a noise-free stable positive-gain SOPDT family in fixed ranges; ideal differentiation and second-order Pade delay; no actuator saturation, exact-delay robustness or hardware validation. Accepted-label filtering excludes teacher failures and can bias the main population. Results do not establish a universal or safety-certified tuner.", "",
-        "Artifacts: saved models, candidate/selected settings, immutable split and selection lock, per-plant test/validation predictions, reference checks, histories, learning curves and plots are stored alongside this report. The website retains the separately labeled 20K development results until explicitly updated."]
+        "Artifacts: saved models, candidate/selected settings, immutable split and selection lock, per-plant test/validation predictions, reference checks, histories, learning curves and plots are stored alongside this report. The website presents the final 10K study; additional development curves, stress tests and response diagnostics retain their own scopes."]
     (OUT / "report.md").write_text("\n".join(lines)+"\n", encoding="utf-8")
     print(metrics[["passes","success_pct","stable_pct","r2","median_ITAE_ratio","median_J_ratio"]].to_string())
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=OUT)
+    OUT = parser.parse_args().output.resolve()
     report()

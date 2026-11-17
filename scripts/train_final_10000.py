@@ -21,9 +21,11 @@ import pandas as pd
 from sklearn.base import clone
 from sklearn.model_selection import train_test_split
 
-import train_20000 as shared
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
+import study as shared
 from benchmark import FEATURES, TARGETS, load_frame
-from large_experiment import summarize
+from study import summarize
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results/dataset_final_10000"
@@ -33,11 +35,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def main(jobs=12):
+def main(jobs=12, output=None):
+    global OUT
+    if output is not None:
+        OUT = Path(output).resolve()
     started = perf_counter()
-    data = ROOT / "data/pid_dataset_final_10000.csv"
     protocol_path = OUT / "protocol.json"
     split = json.loads(protocol_path.read_text(encoding="utf-8"))
+    data = ROOT / split["data_path"]
     if (OUT / "selection_lock.json").exists() or (OUT / "test_metrics.csv").exists():
         raise RuntimeError("Final study already locked/scored. Refusing to overwrite the holdout experiment.")
     frame = load_frame(data)
@@ -150,4 +155,7 @@ def main(jobs=12):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jobs", type=int, default=12)
-    main(parser.parse_args().jobs)
+    parser.add_argument("--output", type=Path, default=OUT,
+                        help="Prepared result directory; use a new directory for reproduction.")
+    args = parser.parse_args()
+    main(args.jobs, args.output)

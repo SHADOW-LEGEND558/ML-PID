@@ -1,0 +1,5 @@
+model,cases,passes,success_pct,base_plants,cluster_ci_low,cluster_ci_high,unstable_count,stability_unassessed_count,reason_counts
+random_forest,100,100,100.0,100,100.0,100.0,0,0,"{""recovered"": 100}"
+xgboost,100,100,100.0,100,100.0,100.0,0,0,"{""recovered"": 100}"
+standard_mlp,100,100,100.0,100,100.0,100.0,0,0,"{""recovered"": 100}"
+numerical_reference,100,100,100.0,100,100.0,100.0,0,0,"{""recovered"": 100}"

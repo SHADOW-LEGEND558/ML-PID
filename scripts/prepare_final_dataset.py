@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from data_gen import Plant, PIDGains, PlantSimulator
-from audit_dataset import audit
+from data_validation import audit
 
 
 def prepare(path, destination, jobs=4):

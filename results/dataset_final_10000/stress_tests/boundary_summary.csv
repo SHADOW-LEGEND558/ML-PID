@@ -1,0 +1,5 @@
+model,cases,passes,success_pct,unstable_count,stability_unassessed_count,reason_counts,overshoot_measured,overshoot_median,overshoot_p95,overshoot_max,overshoot_over_20_count
+random_forest,241,169,70.12448132780082,0,0,"{""accepted"": 169, ""overshoot"": 45, ""resolution_limit"": 27}",215,3.319112326128293,22.649103867948252,32.8181825656926,13
+xgboost,241,170,70.53941908713693,0,0,"{""accepted"": 170, ""overshoot"": 44, ""resolution_limit"": 27}",215,3.229229551864843,18.705565754698192,38.68112795179795,8
+standard_mlp,241,180,74.68879668049793,0,0,"{""accepted"": 180, ""overshoot"": 34, ""resolution_limit"": 27}",215,3.20530220732822,15.490216953919445,41.44345225290274,2
+numerical_reference,241,212,87.96680497925311,0,29,"{""accepted"": 212, ""teacher_unavailable"": 29}",212,2.608563373835815,5.816446701118819,9.45622372813002,0

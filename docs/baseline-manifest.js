@@ -1,0 +1,2 @@
+/* Generated from frozen final baselines. */
+window.PID_BASELINES = {"random_forest":{"url":"models/random_forest.bin.gz","bytes":30765226,"uncompressedBytes":58409920,"sha256":"f8296424f62a651c321f383bd2d8ac6324e913ba670446e94c39c71cf20bf4e8","sourceSha256":"accca6567c5628e132d6ce1667616961f201e49a595bf796a8d308e18b62256f"},"xgboost":{"url":"models/xgboost.json.gz","bytes":505590,"uncompressedBytes":2090835,"sha256":"6cb97393e74f1b9651086766450dfb85d2df706d4933c7e69f0b2fe11818d662","sourceSha256":"9549eb8c64dcc98084d6dca42db4bff89ac835815d84906ff758ac9ca7138aff"}};

@@ -1,6 +1,6 @@
 """Validation-only learning-curve extension and rejected-plant stress test.
 
-The frozen final models and final test partition are never refit or rescored.
+Published model artifacts and final test scores are never overwritten. Selected models are reconstructed in memory for rejected-plant predictions.
 Curve prefixes retain the original 7K training plants, then add independent
 20K-development plants. Every point uses the same 500 final-validation plants.
 """
@@ -11,13 +11,13 @@ from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
-import joblib
 from sklearn.base import clone
-import train_20000 as shared
-from stress_rejected_plants import recover_rejections,validate
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
+import study as shared
+from rejected_plants import recover_rejections,validate
 from benchmark import FEATURES,PLANT_COLUMNS,load_frame
 from data_gen import Plant,PlantSimulator,FeatureExtractor
-from large_experiment import summarize
+from study import summarize, selected_models, frozen_input_hashes
 
 ROOT=Path(__file__).resolve().parents[1]
 FINAL=ROOT/'results/dataset_final_10000'
@@ -25,11 +25,13 @@ OUT=FINAL/'website_extension'
 
 def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 
-def main():
-    from MLP import MLPModel
-    OUT.mkdir(exist_ok=True)
+def main(jobs=4,output=None):
+    global OUT
+    OUT=Path(output or ROOT/'temp/additional_experiments').resolve()
+    if OUT==FINAL or FINAL in OUT.parents:raise ValueError('Use a new output directory outside the published study.')
+    OUT.mkdir(parents=True,exist_ok=True)
     protocol=json.loads((FINAL/'evaluation_protocol.json').read_text(encoding='utf-8'))
-    lock=json.loads((FINAL/'selection_lock.json').read_text(encoding='utf-8'))['files']
+    lock=frozen_input_hashes()
     final=load_frame(ROOT/protocol['data_path'])
     old=load_frame(ROOT/'data/pid_dataset_20000.csv')
     train=final.loc[protocol['train']].copy()
@@ -59,7 +61,7 @@ def main():
     pd.DataFrame({'pool_position':range(len(training)),
         'cohort':['final_training']*7000+['prior_development']*20000,
         'original_row':list(map(int,first))+np.random.default_rng(46).permutation(len(old)).tolist()}).to_csv(OUT/'training_pool.csv',index=False)
-    with ProcessPoolExecutor(max_workers=12) as pool:
+    with ProcessPoolExecutor(max_workers=jobs) as pool:
         for family in settings:
             template=next(e for s,e in settings[family] if s==selected.loc[family,'setting'])
             for size in [10000,15000,20000]:
@@ -82,9 +84,9 @@ def main():
             for k,v in extractor.extract(t,y).items(): plants.loc[i,k]=v
         plants.to_csv(OUT/'rejected_plants.csv',index=False)
         tasks=[]
+        reconstructed=selected_models(settings)
         for family in settings:
-            path=FINAL/f'{family}.{ "pt" if family=="standard_mlp" else "joblib"}'
-            model=MLPModel.load(path) if family=='standard_mlp' else joblib.load(path)['pipeline']
+            model=reconstructed[family]
             predictions=model.predict(plants[FEATURES])
             tasks.extend((family,int(r.rejection_id),[r.zeta,r.wn,r.tau,r.K],g.tolist(),.01) for r,g in zip(plants.itertuples(),predictions))
         records=[]
@@ -95,9 +97,14 @@ def main():
         rejected.to_csv(OUT/'rejected_predictions.csv',index=False)
         rejected.groupby('model').agg(plants=('accepted','size'),strict_passes=('accepted','sum'),
             stable=('stable','sum'),extended_passes=('extended_accepted','sum')).to_csv(OUT/'rejected_summary.csv')
-    assert all(digest(FINAL/name)==value for name,value in lock.items())
+    assert all(digest(ROOT/name)==value for name,value in lock.items())
     (OUT/'verification.json').write_text(json.dumps({'final_lock_unchanged':True,'final_test_rescored':False,
         'curve_points':len(curves),'rejected_plants':len(plants),'rejection_groups':plants.original_reason.value_counts().to_dict()},indent=2),encoding='utf-8')
     print('Website evidence extension complete.',flush=True)
 
-if __name__=='__main__': main()
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--jobs',type=int,default=4)
+    parser.add_argument('--output',type=Path,default=ROOT/'temp/additional_experiments')
+    args=parser.parse_args();main(args.jobs,args.output)

@@ -1,0 +1,5 @@
+model,plants,pade_passes,true_delay_time_domain_passes,median_itae_ratio,pade_pass_true_delay_overshoot
+numerical_reference,100,100,89,1.012677047187172,11
+random_forest,100,85,68,1.0138227415647374,17
+standard_mlp,100,97,84,1.0061562992014101,13
+xgboost,100,78,68,1.012869789961249,10

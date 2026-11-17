@@ -1,4 +1,4 @@
-"""Sequential per-plant optimizer versus frozen-model timing; no retraining."""
+"""Sequential optimizer versus reconstructed-model timing; fitting is excluded."""
 import os
 for key in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS']:os.environ[key]='1'
 import sys,json
@@ -6,20 +6,22 @@ from pathlib import Path
 from time import perf_counter
 import numpy as np
 import pandas as pd
-import joblib
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from benchmark import FEATURES,assess_controller
 from data_gen import Plant,PIDOptimizer,PlantSimulator
-from MLP import MLPModel
+from study import selected_models
 import torch
 
 
 if __name__=='__main__':
-    import time
-    while not Path('results/dataset_final_10000/website_extension/verification.json').exists():
-        time.sleep(5)
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output',type=Path,default=Path('temp/timing'))
+    args=parser.parse_args()
     torch.set_num_threads(2)
-    root=Path('results/dataset_final_10000');output=root/'tuning_speed';output.mkdir(exist_ok=True)
+    root=Path('results/dataset_final_10000');output=args.output.resolve()
+    if output==root.resolve() or root.resolve() in output.parents:raise ValueError('Use a new output directory outside the published study.')
+    output.mkdir(parents=True,exist_ok=True)
     protocol=json.loads((root/'evaluation_protocol.json').read_text());frame=pd.read_csv(protocol['data_path'])
     available=frame.loc[protocol['validation']]
     sample=pd.concat([available[available.tau.eq(0)].sample(2,random_state=48),
@@ -38,9 +40,8 @@ if __name__=='__main__':
         print(f'Optimizer {len(optimizations)}/20: {elapsed:.3f}s, accepted={gains is not None}',flush=True)
     optimization=pd.DataFrame(optimizations).set_index('source_row');optimization.to_csv(output/'optimizer.csv')
     rows=[]
-    for name in ['linear','ridge','polynomial_ridge','random_forest','xgboost','standard_mlp']:
-        path=root/(name+('.pt' if name=='standard_mlp' else '.joblib'))
-        model=MLPModel.load(path) if name=='standard_mlp' else joblib.load(path)['pipeline']
+    reconstructed=selected_models()  # Training is excluded from warm inference timings.
+    for name,model in reconstructed.items():
         for _ in range(3):model.predict(sample.iloc[[0]][FEATURES])
         for index,r in sample.iterrows():
             X=sample.loc[[index],FEATURES];durations=[]

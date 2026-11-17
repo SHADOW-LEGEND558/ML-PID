@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from sklearn.dummy import DummyRegressor
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
-from control_experiments import EmpiricalTargetRegressor
+from target_normalization import EmpiricalTargetRegressor
 
 
 class TargetNormalizationTests(unittest.TestCase):

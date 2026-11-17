@@ -1,0 +1,8 @@
+model,plants,stable,original_strict_passes,resolved,stable_unresolved,resolved_over_10,over_10_median_overshoot,over_10_median_itae_ratio,over_10_median_settling_ratio,reason_counts
+linear,1500,1070,437,1056,14,619,34.43683027640858,4.419158848415309,3.1115695527542275,"{""duration_limit"": 6, ""resolution_limit"": 8, ""resolved"": 1056, ""unstable"": 430}"
+ridge,1500,1076,442,1060,16,618,34.291327687861774,4.355517735874988,3.1034070117212362,"{""duration_limit"": 7, ""resolution_limit"": 9, ""resolved"": 1060, ""unstable"": 424}"
+polynomial_ridge,1500,1231,620,1217,14,594,24.463264634622693,2.9664875116907936,2.4937201304546344,"{""duration_limit"": 8, ""resolution_limit"": 6, ""resolved"": 1217, ""unstable"": 269}"
+random_forest,1500,1500,1301,1500,0,199,14.339645365004937,2.193567408360236,2.0998648800956423,"{""resolved"": 1500}"
+xgboost,1500,1500,1272,1500,0,227,13.7517046944025,1.5747930468546205,1.8462714968900047,"{""resolved"": 1500}"
+standard_mlp,1500,1500,1406,1500,0,94,11.426315212780814,1.2958423830386194,1.2828262659299785,"{""resolved"": 1500}"
+numerical_reference,1500,1500,1500,1500,0,0,,,,"{""resolved"": 1500}"

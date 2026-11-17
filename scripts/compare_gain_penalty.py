@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--samples', type=int, default=None, help='Select matched plants from source; half zero-delay if available')
     parser.add_argument('--source', type=Path, default=Path('data/pid_dataset.csv'))
     parser.add_argument('--weights', type=float, nargs='+', default=[0.,.001,.01,.1])
-    parser.add_argument('--output', type=Path, default=Path('results/gain_penalty'))
+    parser.add_argument('--output', type=Path, default=Path('temp/gain_penalty'))
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--jobs', type=int, default=8)
     args = parser.parse_args()

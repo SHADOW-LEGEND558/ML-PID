@@ -1,0 +1,41 @@
+model,group,cases,passes,success_pct,unstable_count,stability_unassessed_count,reason_counts,overshoot_measured,overshoot_median,overshoot_p95,overshoot_max,overshoot_over_20_count
+random_forest,zero_delay,25,23,92.0,0,0,"{""accepted"": 23, ""overshoot"": 2}",25,1.960234099553393,15.359566182965398,18.949308424404386,0
+random_forest,tiny_delay,25,1,4.0,0,0,"{""accepted"": 1, ""resolution_limit"": 24}",1,0.7390806493493329,0.7390806493493329,0.7390806493493329,0
+random_forest,low_damping,25,13,52.0,0,0,"{""accepted"": 13, ""overshoot"": 12}",25,9.987137579965877,18.625355660610307,24.975239923999748,1
+random_forest,high_damping,25,23,92.0,0,0,"{""accepted"": 23, ""overshoot"": 2}",25,0.882858849962842,11.998995335211633,15.087991548907652,0
+random_forest,low_gain,25,22,88.0,0,0,"{""accepted"": 22, ""overshoot"": 3}",25,3.420774188019804,10.39467516464771,15.642074882566636,0
+random_forest,high_gain,25,21,84.0,0,0,"{""accepted"": 21, ""overshoot"": 4}",25,2.3337054736633167,18.049942641515884,21.617752239828448,1
+random_forest,slow_plant,25,14,56.00000000000001,0,0,"{""accepted"": 14, ""overshoot"": 10, ""resolution_limit"": 1}",24,7.45418249454154,24.138282444100565,25.731751358247237,3
+random_forest,fast_plant,25,20,80.0,0,0,"{""accepted"": 20, ""overshoot"": 3, ""resolution_limit"": 2}",24,1.8406636653865105,21.04797111601716,28.879324232721306,2
+random_forest,large_normalized_delay,25,22,88.0,0,0,"{""accepted"": 22, ""overshoot"": 3}",25,3.2073053645654825,11.686586330697526,15.691564173528729,0
+random_forest,corners,16,10,62.5,0,0,"{""accepted"": 10, ""overshoot"": 6}",16,5.835926073061626,31.958075700553408,32.8181825656926,6
+xgboost,zero_delay,25,24,96.0,0,0,"{""accepted"": 24, ""overshoot"": 1}",25,1.743634571673458,7.969459423885253,21.88894242852335,1
+xgboost,tiny_delay,25,1,4.0,0,0,"{""accepted"": 1, ""resolution_limit"": 24}",1,0.5075333415847316,0.5075333415847316,0.5075333415847316,0
+xgboost,low_damping,25,14,56.00000000000001,0,0,"{""accepted"": 14, ""overshoot"": 11}",25,7.60448355565051,19.29279197212977,19.651305103945084,0
+xgboost,high_damping,25,24,96.0,0,0,"{""accepted"": 24, ""overshoot"": 1}",25,1.0218587545093527,6.982765647927994,10.870764285892797,0
+xgboost,low_gain,25,20,80.0,0,0,"{""accepted"": 20, ""overshoot"": 5}",25,5.236953856597326,18.12602640850486,18.4695389089508,0
+xgboost,high_gain,25,19,76.0,0,0,"{""accepted"": 19, ""overshoot"": 6}",25,2.859019282937947,18.553738873852406,22.198681208688487,1
+xgboost,slow_plant,25,18,72.0,0,0,"{""accepted"": 18, ""overshoot"": 6, ""resolution_limit"": 1}",24,4.680141744711608,19.786466296730495,25.49870865213304,2
+xgboost,fast_plant,25,20,80.0,0,0,"{""accepted"": 20, ""overshoot"": 3, ""resolution_limit"": 2}",24,2.04769161385564,14.308156932906217,17.053428680033655,0
+xgboost,large_normalized_delay,25,21,84.0,0,0,"{""accepted"": 21, ""overshoot"": 4}",25,5.758241724840341,11.695282797246902,15.810259555649653,0
+xgboost,corners,16,9,56.25,0,0,"{""accepted"": 9, ""overshoot"": 7}",16,5.660179778074857,28.128067655701606,38.68112795179795,4
+standard_mlp,zero_delay,25,25,100.0,0,0,"{""accepted"": 25}",25,1.801315088596045,4.931034497922705,6.587128837283918,0
+standard_mlp,tiny_delay,25,1,4.0,0,0,"{""accepted"": 1, ""resolution_limit"": 24}",1,0.0,0.0,0.0,0
+standard_mlp,low_damping,25,19,76.0,0,0,"{""accepted"": 19, ""overshoot"": 6}",25,6.544776581479161,14.91047384162247,16.503144609012388,0
+standard_mlp,high_damping,25,25,100.0,0,0,"{""accepted"": 25}",25,0.5957050545927212,3.1241318143298624,3.4899967589860914,0
+standard_mlp,low_gain,25,21,84.0,0,0,"{""accepted"": 21, ""overshoot"": 4}",25,3.2636130655388618,11.930846984885536,14.153916500326693,0
+standard_mlp,high_gain,25,23,92.0,0,0,"{""accepted"": 23, ""overshoot"": 2}",25,4.633575780291532,10.530215166831878,12.475628150965369,0
+standard_mlp,slow_plant,25,24,96.0,0,0,"{""accepted"": 24, ""resolution_limit"": 1}",24,1.2773032793615413,5.6661953413354125,8.76741298213759,0
+standard_mlp,fast_plant,25,20,80.0,0,0,"{""accepted"": 20, ""overshoot"": 3, ""resolution_limit"": 2}",24,2.668150323438201,11.837029201867148,12.346291917118668,0
+standard_mlp,large_normalized_delay,25,11,44.0,0,0,"{""accepted"": 11, ""overshoot"": 14}",25,11.625823499953691,19.846705306835446,21.40832492442808,1
+standard_mlp,corners,16,11,68.75,0,0,"{""accepted"": 11, ""overshoot"": 5}",16,3.603590997684236,24.98600254496566,41.44345225290274,1
+numerical_reference,zero_delay,25,25,100.0,0,0,"{""accepted"": 25}",25,0.4821866644189487,0.7766008005353653,8.499189968907528,0
+numerical_reference,tiny_delay,25,1,4.0,0,24,"{""accepted"": 1, ""teacher_unavailable"": 24}",1,0.7490664721353957,0.7490664721353957,0.7490664721353957,0
+numerical_reference,low_damping,25,23,92.0,0,2,"{""accepted"": 23, ""teacher_unavailable"": 2}",23,5.122104567217534,5.984585854183246,6.179798467427222,0
+numerical_reference,high_damping,25,25,100.0,0,0,"{""accepted"": 25}",25,2.813295097118651,3.0847299395496286,3.094090195691468,0
+numerical_reference,low_gain,25,25,100.0,0,0,"{""accepted"": 25}",25,2.91724992900122,4.310428573865966,5.808796786857995,0
+numerical_reference,high_gain,25,25,100.0,0,0,"{""accepted"": 25}",25,2.9121648273344736,3.2473506382922723,3.628288507776412,0
+numerical_reference,slow_plant,25,24,96.0,0,1,"{""accepted"": 24, ""teacher_unavailable"": 1}",24,0.636683507009439,4.7942724864140125,5.867887294809582,0
+numerical_reference,fast_plant,25,23,92.0,0,2,"{""accepted"": 23, ""teacher_unavailable"": 2}",23,2.7009000350305623,3.4849906168385503,6.411395511707108,0
+numerical_reference,large_normalized_delay,25,25,100.0,0,0,"{""accepted"": 25}",25,2.232961804367406,2.9909258411884387,3.0796587152954302,0
+numerical_reference,corners,16,16,100.0,0,0,"{""accepted"": 16}",16,1.1841234765061825,7.344941895556401,9.45622372813002,0

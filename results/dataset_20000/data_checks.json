@@ -1,8 +1,0 @@
-{
-  "rows": 20000,
-  "metadata_hash_matches": true,
-  "nonfinite": 0,
-  "duplicate_plants": 0,
-  "feature_spot_checks": 128,
-  "max_feature_difference": 1.7763568394002505e-15
-}

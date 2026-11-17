@@ -1,0 +1,57 @@
+[
+  {
+    "original": "results/dataset_20000/test_metrics.csv",
+    "retained": "results/dataset_final_10000/development_reference/20000_test_metrics.csv",
+    "sha256": "2498aadac88190733e32371948fdde9868c4cf853fe838b97adf8306bf7600a9"
+  },
+  {
+    "original": "results/mlp_experiments/seed_results.csv",
+    "retained": "results/dataset_final_10000/development_reference/physics_comparison/seed_results.csv",
+    "sha256": "0c6d277d2f27b55810d92fb0cf0644eb80533721172785000e57fed680ce4f08"
+  },
+  {
+    "original": "results/mlp_experiments/seed_summary.csv",
+    "retained": "results/dataset_final_10000/development_reference/physics_comparison/seed_summary.csv",
+    "sha256": "f8830fff27e3c6c608806ca8801706ed90e79f506fcd4f63a74551f8b762d51a"
+  },
+  {
+    "original": "results/mlp_experiments/selected.csv",
+    "retained": "results/dataset_final_10000/development_reference/physics_comparison/selected.csv",
+    "sha256": "10519e5d7e2ec19138998a13c288106f8051e36ef721bc6c288cee045e546b1e"
+  },
+  {
+    "original": "results/mlp_experiments/protocol.json",
+    "retained": "results/dataset_final_10000/development_reference/physics_comparison/protocol.json",
+    "sha256": "a55f28e266d3420500c748a5261b9e415799744111801faa90802b8d7bb94953"
+  },
+  {
+    "original": "results/mlp_experiments/report.md",
+    "retained": "results/dataset_final_10000/development_reference/physics_comparison/report.md",
+    "sha256": "0d94d1c70ba6ad00dc92792a9f451931fa703bad7c2308194e9da2711a6ba303"
+  },
+  {
+    "original": "results/gain_penalty_200/experiment.json",
+    "retained": "results/dataset_final_10000/development_reference/gain_penalty_calibration/experiment.json",
+    "sha256": "07e163aa6d56305beb9d9e65dfba44f086503ff2267763a685279512379350b8"
+  },
+  {
+    "original": "results/gain_penalty_200/plants.csv",
+    "retained": "results/dataset_final_10000/development_reference/gain_penalty_calibration/plants.csv",
+    "sha256": "5e636312de858f160f6cac3b3319f7123751e129817c7a316ed0f4e929fc1af2"
+  },
+  {
+    "original": "results/gain_penalty_200/trials.csv",
+    "retained": "results/dataset_final_10000/development_reference/gain_penalty_calibration/trials.csv",
+    "sha256": "4dfa1d4737e60c18f869a834b2e8304de0d9c1cf451a51f7f38dfa01115afc91"
+  },
+  {
+    "original": "results/gain_penalty_200/summary.csv",
+    "retained": "results/dataset_final_10000/development_reference/gain_penalty_calibration/summary.csv",
+    "sha256": "13b56d93554cd4eb3ca28f2d598e31792dc3b462714de4692f2c9b37f3b8fdaf"
+  },
+  {
+    "original": "results/gain_penalty_200/report.md",
+    "retained": "results/dataset_final_10000/development_reference/gain_penalty_calibration/report.md",
+    "sha256": "74505fbeddc280643dbd4b70b4331426200c4f4b39480d0c62ee57bdf3cc86a2"
+  }
+]

@@ -1,23 +1,18 @@
-# Byte-compiled / Python cache
+# Python caches and local environments
 __pycache__/
-*.pyc
-*.pyo
-
-# Virtual Environments
-.venv/
-.venv-review/
+*.py[co]
+.venv*/
 venv/
 env/
+.ipynb_checkpoints/
 
-# Large binaries / unneeded model checkpoints
+# Scratch outputs and optional training checkpoints
+temp/
 *.pt
-*.pth
 *.joblib
 
-# OS-specific files
-.DS_Store
-Thumbs.db
-
-# IDE configurations
+# Local editor and OS files
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db

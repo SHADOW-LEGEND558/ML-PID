@@ -1,0 +1,5 @@
+model,plants,passes,success_pct
+numerical_reference,100,100,100.0
+random_forest,100,85,85.0
+standard_mlp,100,97,97.0
+xgboost,100,78,78.0

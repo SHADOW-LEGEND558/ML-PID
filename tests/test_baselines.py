@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-from Baselines import Dataset, EvaluateModel
 from benchmark import FEATURES, gain_metrics, split_plants, assess_controller
 from data_gen import Plant, PlantSimulator, FeatureExtractor, DatasetGenerator
 
@@ -13,12 +12,8 @@ from data_gen import Plant, PlantSimulator, FeatureExtractor, DatasetGenerator
 class BaselineTests(unittest.TestCase):
     def test_mean_predictor_has_zero_r2(self):
         y = np.array([[1.,100.,.1],[2.,200.,.2],[3.,300.,.3]])
-        class MeanModel:
-            name = 'mean'
-            def predict(self, dataset):
-                return np.tile(dataset.targets.mean(axis=0), (len(y),1))
-        self.assertAlmostEqual(EvaluateModel().evaluate(MeanModel(), Dataset(y,y)).r2_score, 0)
-        self.assertAlmostEqual(gain_metrics(y, MeanModel().predict(Dataset(y,y)))['r2'], 0)
+        prediction=np.tile(y.mean(axis=0),(len(y),1))
+        self.assertAlmostEqual(gain_metrics(y,prediction)['r2'],0)
 
     def test_identical_plants_never_cross_split(self):
         frame = pd.DataFrame({'zeta': np.repeat(np.arange(10)+1,2),
