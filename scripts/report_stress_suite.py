@@ -2,6 +2,7 @@
 import json
 import hashlib
 import os
+import sys
 from pathlib import Path
 os.environ.setdefault('MPLCONFIGDIR',str(Path(__file__).resolve().parents[1]/'temp/mpl-cache'))
 import numpy as np
@@ -11,6 +12,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
+from provenance import matches_recorded_hash
 BASE=ROOT/'results/dataset_final_10000'
 OUT=BASE/'stress_tests'
 NAMES=['random_forest','xgboost','standard_mlp','numerical_reference']
@@ -68,7 +71,7 @@ def main():
     # are no longer distributed or needed to summarize the saved experiment.
     inputs={path:value for path,value in protocol['frozen_hashes'].items()
             if Path(path.replace('\\','/')).suffix not in ['.pt','.joblib']}
-    assert all(hashlib.sha256((ROOT/path.replace('\\','/')).read_bytes()).hexdigest()==value
+    assert all(matches_recorded_hash(ROOT/path.replace('\\','/'),value)
                for path,value in inputs.items())
     nominal_gains=frames['uncertainty'][['source_row','model','gain_Kp','gain_Ki','gain_Kd']].drop_duplicates()
     assert len(nominal_gains)==400

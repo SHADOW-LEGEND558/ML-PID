@@ -26,6 +26,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 import study as shared
 from benchmark import FEATURES, TARGETS, load_frame
 from study import summarize
+from provenance import matches_recorded_hash
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results/dataset_final_10000"
@@ -47,7 +48,9 @@ def main(jobs=12, output=None):
         raise RuntimeError("Final study already locked/scored. Refusing to overwrite the holdout experiment.")
     frame = load_frame(data)
     metadata = json.loads(data.with_suffix(".meta.json").read_text(encoding="utf-8"))
-    assert len(frame) == 10000 and sha(data) == split["dataset_sha256"] == metadata["dataset_sha256"]
+    assert len(frame) == 10000
+    assert matches_recorded_hash(data, split["dataset_sha256"])
+    assert matches_recorded_hash(data, metadata["dataset_sha256"])
     assert metadata["gain_penalty"] == .01 and not frame.duplicated(["zeta", "wn", "tau", "K"]).any()
     train, validation, test = (split[k] for k in ("train", "validation", "test"))
     assert [len(train), len(validation), len(test)] == [7000, 1500, 1500]
@@ -143,7 +146,7 @@ def main(jobs=12, output=None):
                 pd.DataFrame(curves).to_csv(OUT / "learning_curves.csv", index=False)
     assert all(sha(OUT / filename) == digest for filename, digest in locked.items())
     verification = {"split_sizes": {k: len(split[k]) for k in ["train", "validation", "test"]},
-        "dataset_hash_unchanged": sha(data) == protocol["dataset_sha256"],
+        "dataset_hash_unchanged": matches_recorded_hash(data, protocol["dataset_sha256"]),
         "all_locked_artifact_hashes_unchanged": True, "saved_prediction_max_abs_difference": reproducibility,
         "validation_reference_accepted": sum(r["accepted"] for r in val_refs.values()),
         "test_reference_accepted": sum(r["accepted"] for r in test_refs.values()),

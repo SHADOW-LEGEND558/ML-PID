@@ -10,6 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'src'))
 from benchmark import FEATURES,TARGETS,PLANT_COLUMNS,load_frame,gain_metrics
 from target_normalization import evaluate_task
+from provenance import matches_recorded_hash
 OUT=ROOT/'temp/physics_comparison'
 
 def score(records):
@@ -60,7 +61,7 @@ if __name__=='__main__':
     reference=published/'development_reference/physics_comparison'
     protocol=json.loads((reference/'protocol.json').read_text())
     path=ROOT/'data/pid_dataset.csv'
-    assert hashlib.sha256(path.read_bytes()).hexdigest()==protocol['dataset_sha256']
+    assert matches_recorded_hash(path,protocol['dataset_sha256'])
     frame=load_frame(path)
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         tasks=[(int(i),frame.loc[i,PLANT_COLUMNS].tolist(),frame.loc[i,TARGETS].tolist(),.01) for i in protocol['development_rows']]

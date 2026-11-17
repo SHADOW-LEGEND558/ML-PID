@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from data_gen import Plant, PIDGains, PlantSimulator
 from data_validation import audit
+from provenance import matches_recorded_hash
 
 
 def prepare(path, destination, jobs=4):
@@ -30,7 +31,7 @@ def prepare(path, destination, jobs=4):
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     assert len(frame) == metadata["samples"] == 10000
     assert metadata["gain_penalty"] == .01
-    assert digest == metadata["dataset_sha256"]
+    assert matches_recorded_hash(path, metadata["dataset_sha256"])
     assert np.isfinite(frame.to_numpy()).all()
     assert "AUC" not in frame
     plant_columns = ["zeta", "wn", "tau", "K"]

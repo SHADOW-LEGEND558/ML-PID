@@ -5,6 +5,7 @@
 - `benchmark.py`: data loading, gain errors, grouped splitting and raw-controller validation.
 - `target_normalization.py`: empirical target scaling and multiprocessing controller tasks.
 - `study.py`: selected configurations, 70/15/15 split validation, model reconstruction and experiment summaries. `selected_models()` fits in memory without writing checkpoints/results.
+- `provenance.py`: recorded text-hash verification across LF/CRLF checkouts; binary hashes remain exact.
 - `data_validation.py`: independent label and feature audit.
 - `rejected_plants.py`: rejection-log recovery and standard/expanded numerical-budget validation.
 - `plotting.py`: shared comparison/response/overshoot figures.

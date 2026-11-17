@@ -17,6 +17,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from xgboost import XGBRegressor
 from benchmark import FEATURES,TARGETS,PLANT_COLUMNS,load_frame,gain_metrics
 from target_normalization import EmpiricalTargetRegressor,evaluate_task
+from provenance import matches_recorded_hash
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'results/dataset_final_10000'
@@ -102,7 +103,7 @@ def selected_models(names=None):
     names=MODEL_NAMES if names is None else list(names)
     protocol=json.loads((BASE/'evaluation_protocol.json').read_text())
     path=ROOT/protocol['data_path']
-    if hashlib.sha256(path.read_bytes()).hexdigest()!=protocol['dataset_sha256']:
+    if not matches_recorded_hash(path,protocol['dataset_sha256']):
         raise ValueError('Final dataset checksum mismatch.')
     frame=load_frame(path)
     train,validation,_=validate_split(protocol,len(frame))
@@ -152,7 +153,7 @@ def model_fingerprints(models):
 
 def runtime_signature(models=None):
     from importlib.metadata import version
-    sources=[ROOT/'src'/name for name in ['data_gen.py','benchmark.py','MLP.py','target_normalization.py','study.py']]
+    sources=[ROOT/'src'/name for name in ['data_gen.py','benchmark.py','MLP.py','target_normalization.py','study.py','provenance.py']]
     return dict(versions={name:version(name) for name in ['numpy','scipy','scikit-learn','xgboost','torch']},
                 source_hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 model_fingerprints=model_fingerprints(models) if models is not None else {})

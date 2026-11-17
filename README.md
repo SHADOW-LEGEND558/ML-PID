@@ -24,6 +24,8 @@ python -m unittest discover -s tests -v
 
 Core versions are pinned in `requirements.txt`; notebook dependencies are in `requirements-notebooks.txt`. No GPU, API key or model download is needed for scientific reproduction.
 
+Recorded SHA-256 values describe the original study files. Integrity checks accept LF/CRLF text line-ending conversions made by Git, while rejecting changed values. Binary model files still require an exact byte hash; the recorded study data and results are unchanged.
+
 ## Study and reproduce the models
 
 Open a notebook in [model_testing/](model_testing/), select the project environment and Run All:
